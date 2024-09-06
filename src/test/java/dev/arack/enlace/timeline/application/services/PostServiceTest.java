@@ -128,6 +128,7 @@ class PostServiceTest {
         // Arrange
         Long postId = 1L;
         String newContent = "Updated content";
+        Long userId = 1L;
         PostEntity existingPost = new PostEntity();
         existingPost.setContent("Old content");
         PostEntity updatedPost = new PostEntity();
@@ -136,7 +137,7 @@ class PostServiceTest {
         when(postPersistencePort.updatePost(any(PostEntity.class))).thenReturn(updatedPost);
 
         // Act
-        PostEntity result = postService.updatePost(postId, newContent);
+        PostEntity result = postService.updatePost(postId, newContent, userId);
 
         // Assert
         assertNotNull(result);
@@ -149,11 +150,12 @@ class PostServiceTest {
         // Arrange
         Long postId = 1L;
         String content = "Updated content";
+        Long userId = 1L;
         when(postPersistencePort.findById(postId)).thenReturn(Optional.empty());
 
         // Act & Assert
         ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
-            postService.updatePost(postId, content);
+            postService.updatePost(postId, content, userId);
         });
         assertEquals("Post not found", exception.getMessage());
         verify(postPersistencePort, never()).updatePost(any(PostEntity.class));

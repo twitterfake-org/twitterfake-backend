@@ -6,7 +6,6 @@ import dev.arack.enlace.iam.application.ports.input.UserServicePort;
 import dev.arack.enlace.iam.infrastructure.adapters.input.dto.request.UserRequest;
 import dev.arack.enlace.shared.domain.exceptions.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

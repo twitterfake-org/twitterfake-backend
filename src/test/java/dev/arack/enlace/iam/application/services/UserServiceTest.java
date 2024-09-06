@@ -9,7 +9,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 import java.util.Optional;
@@ -68,7 +67,7 @@ public class UserServiceTest {
     @Test
     public void testUpdateUser() {
         // Arrange
-        String username = "testUser";
+        Long userId = 1L;
         UserRequest userRequest = new UserRequest();
         userRequest.setFirstName("John");
         userRequest.setLastName("Doe");
@@ -77,13 +76,13 @@ public class UserServiceTest {
         userEntity.setFirstName("OldFirstName");
         userEntity.setLastName("OldLastName");
 
-        when(userPersistencePort.findByUsername(username)).thenReturn(Optional.of(userEntity));
+        when(userPersistencePort.findById(userId)).thenReturn(Optional.of(userEntity));
 
         // Act
-        userService.updateUser(username, userRequest);
+        userService.updateUser(userId, userRequest);
 
         // Assert
-        verify(userPersistencePort, times(1)).findByUsername(username);
+        verify(userPersistencePort, times(1)).findById(userId);
         verify(userPersistencePort, times(1)).updateUser(userEntity);
         assertEquals("John", userEntity.getFirstName());
         assertEquals("Doe", userEntity.getLastName());
@@ -91,15 +90,15 @@ public class UserServiceTest {
     @Test
     public void testDeleteUser() {
         // Arrange
-        String username = "testUser";
+        Long userId = 1L;
         UserEntity userEntity = new UserEntity();
-        when(userPersistencePort.findByUsername(username)).thenReturn(Optional.of(userEntity));
+        when(userPersistencePort.findById(userId)).thenReturn(Optional.of(userEntity));
 
         // Act
-        userService.deleteUser(username);
+        userService.deleteUser(userId);
 
         // Assert
-        verify(userPersistencePort, times(1)).findByUsername(username);
+        verify(userPersistencePort, times(1)).findById(userId);
         verify(userPersistencePort, times(1)).deleteUser(userEntity);
     }
 }
