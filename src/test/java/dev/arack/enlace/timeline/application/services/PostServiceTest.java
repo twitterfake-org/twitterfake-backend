@@ -129,10 +129,14 @@ class PostServiceTest {
         Long postId = 1L;
         String newContent = "Updated content";
         Long userId = 1L;
+        UserEntity userEntity = new UserEntity();
+        userEntity.setId(userId);
         PostEntity existingPost = new PostEntity();
         existingPost.setContent("Old content");
+        existingPost.setUserEntity(userEntity);
         PostEntity updatedPost = new PostEntity();
         updatedPost.setContent(newContent);
+        updatedPost.setUserEntity(userEntity);
         when(postPersistencePort.findById(postId)).thenReturn(Optional.of(existingPost));
         when(postPersistencePort.updatePost(any(PostEntity.class))).thenReturn(updatedPost);
 
@@ -145,6 +149,7 @@ class PostServiceTest {
         verify(postPersistencePort, times(1)).findById(postId);
         verify(postPersistencePort, times(1)).updatePost(existingPost);
     }
+
     @Test
     void updatePost_PostNotFound() {
         // Arrange
