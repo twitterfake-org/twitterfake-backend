@@ -1,7 +1,7 @@
 package dev.arack.enlace.timeline.application.ports.input;
 
 import dev.arack.enlace.timeline.domain.model.PostEntity;
-import dev.arack.enlace.timeline.infrastructure.adapters.input.dto.PostRequest;
+import dev.arack.enlace.timeline.infrastructure.adapters.input.dto.request.PostRequest;
 
 import java.util.List;
 
@@ -46,9 +46,10 @@ public interface PostServicePort {
      *
      * @param postId The ID of the post to be updated.
      * @param content The new post.
+     * @param userId The ID of the user updating the post.
      * @return A {@link PostEntity} object representing the updated post.
      */
-    PostEntity updatePost(Long postId, String content);
+    PostEntity updatePost(Long postId, String content, Long userId);
 
     /**
      * Deletes a post by its ID.

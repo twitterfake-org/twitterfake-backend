@@ -6,9 +6,9 @@ spring:
     name: Enlace
 
   datasource:
-    url: jdbc:mysql://s-db-mysql.mysql.database.azure.com:3306/dev_enlace?useSSL=true&serverTimezone=UTC
-    username: wilverar
-    password: warraw*280101
+    url: jdbc:mysql://databasems.mysql.database.azure.com:3306/dev_enlace?useSSL=true&serverTimezone=UTC
+    username: arack
+    password: jarraj*160104
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:

@@ -1,7 +1,7 @@
 package dev.arack.enlace.timeline.infrastructure.adapters.input.controllers;
 
+import dev.arack.enlace.iam.application.services.UserDetailsServiceImpl;
 import dev.arack.enlace.iam.infrastructure.adapters.input.dto.response.UserResponse;
-import dev.arack.enlace.iam.infrastructure.adapters.output.repositories.UserRepository;
 import dev.arack.enlace.timeline.application.ports.input.FollowServicePort;
 import dev.arack.enlace.timeline.domain.model.FollowEntity;
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,39 +23,47 @@ public class FollowControllerAdapter {
 
     private final FollowServicePort followServicePort;
     private final ModelMapper modelMapper;
+    private final UserDetailsServiceImpl userDetailsService;
+
+    private Long getCurrentUserId() {
+        return userDetailsService.getCurrentUser().getId();
+    }
 
     @Transactional
-    @PostMapping(value = "/follow")
+    @PostMapping(value = "/{followedId}")
     @Operation(
             summary = "Follow a user",
             description = "Follow a user by providing the follower and followed user IDs"
     )
-    public ResponseEntity<String> followUser(@RequestParam Long followerId, @RequestParam Long followedId) {
-        followServicePort.followUser(followerId, followedId);
+    public ResponseEntity<String> followUser(@PathVariable Long followedId) {
+        Long ID_LOGGED = getCurrentUserId();
+        followServicePort.followUser(ID_LOGGED, followedId);
 
         return ResponseEntity.ok("User followed successfully");
     }
 
     @Transactional
-    @DeleteMapping(value = "/unfollow")
+    @DeleteMapping(value = "/unfollow/{followedId}")
     @Operation(
             summary = "Unfollow a user",
             description = "Unfollow a user by providing the follower and followed user IDs"
     )
-    public ResponseEntity<String> unfollowUser(@RequestParam Long followerId, @RequestParam Long followedId) {
-        followServicePort.unfollowUser(followerId, followedId);
+    public ResponseEntity<String> unfollowUser(@PathVariable Long followedId) {
+        Long ID_LOGGED = getCurrentUserId();
+        followServicePort.unfollowUser(ID_LOGGED, followedId);
 
         return ResponseEntity.ok("User unfollowed successfully");
     }
 
     @Transactional(readOnly = true)
-    @GetMapping(value = "/followers/{userId}")
+    @GetMapping(value = "/followers")
     @Operation(
             summary = "Get followers",
             description = "Get followers of a user by providing the user ID"
     )
-    public ResponseEntity<List<UserResponse>> getFollowers(@PathVariable Long userId) {
-        List<FollowEntity> followEntities = followServicePort.getFollowers(userId);
+    public ResponseEntity<List<UserResponse>> getFollowers() {
+        Long ID_LOGGED = getCurrentUserId();
+        List<FollowEntity> followEntities = followServicePort.getFollowers(ID_LOGGED);
         List<UserResponse> followersResponse = followEntities.stream()
                 .map(followEntity -> modelMapper.map(followEntity.getFollower(), UserResponse.class))
                 .toList();
@@ -64,13 +72,14 @@ public class FollowControllerAdapter {
     }
 
     @Transactional(readOnly = true)
-    @GetMapping(value = "/following/{userId}")
+    @GetMapping(value = "/following")
     @Operation(
             summary = "Get following",
             description = "Get users followed by a user by providing the user ID"
     )
-    public ResponseEntity<List<UserResponse>> getFollowing(@PathVariable Long userId) {
-        List<FollowEntity> followEntities = followServicePort.getFollowing(userId);
+    public ResponseEntity<List<UserResponse>> getFollowing() {
+        Long ID_LOGGED = getCurrentUserId();
+        List<FollowEntity> followEntities = followServicePort.getFollowing(ID_LOGGED);
         List<UserResponse> followingResponse = followEntities.stream()
                 .map(followEntity -> modelMapper.map(followEntity.getFollowed(), UserResponse.class))
                 .toList();

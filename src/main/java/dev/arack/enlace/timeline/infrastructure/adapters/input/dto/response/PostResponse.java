@@ -1,6 +1,5 @@
-package dev.arack.enlace.timeline.infrastructure.adapters.input.dto;
+package dev.arack.enlace.timeline.infrastructure.adapters.input.dto.response;
 
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,8 +9,9 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class PostRequest {
-
-    @NotBlank(message = "Content cannot be blank")
+public class PostResponse {
+    private Long id;
     private String content;
+    private String username;
+    private String createdAt;
 }

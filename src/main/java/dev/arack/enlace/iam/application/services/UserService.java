@@ -29,8 +29,9 @@ public class UserService implements UserServicePort {
     }
 
     @Override
-    public void updateUser(String username, UserRequest userRequest) {
-        UserEntity userEntity = getUserByUsername(username);
+    public void updateUser(Long usedId, UserRequest userRequest) {
+        UserEntity userEntity = userPersistencePort.findById(usedId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         userEntity.setFirstName(userRequest.getFirstName());
         userEntity.setLastName(userRequest.getLastName());
 
@@ -38,8 +39,9 @@ public class UserService implements UserServicePort {
     }
 
     @Override
-    public void deleteUser(String username) {
-        UserEntity userEntity = getUserByUsername(username);
+    public void deleteUser(Long userId) {
+        UserEntity userEntity = userPersistencePort.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         userPersistencePort.deleteUser(userEntity);
     }

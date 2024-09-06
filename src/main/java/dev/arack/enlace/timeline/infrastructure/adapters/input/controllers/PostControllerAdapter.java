@@ -1,13 +1,15 @@
 package dev.arack.enlace.timeline.infrastructure.adapters.input.controllers;
 
+import dev.arack.enlace.iam.application.services.UserDetailsServiceImpl;
 import dev.arack.enlace.timeline.domain.model.PostEntity;
 import dev.arack.enlace.timeline.application.ports.input.PostServicePort;
-import dev.arack.enlace.timeline.infrastructure.adapters.input.dto.PostRequest;
-import dev.arack.enlace.timeline.infrastructure.adapters.input.dto.PostResponse;
+import dev.arack.enlace.timeline.infrastructure.adapters.input.dto.request.PostRequest;
+import dev.arack.enlace.timeline.infrastructure.adapters.input.dto.response.PostResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -27,15 +29,21 @@ public class PostControllerAdapter {
 
     private final PostServicePort postServicePort;
     private final ModelMapper modelMapper;
+    private final UserDetailsServiceImpl userDetailsService;
+
+    private Long getCurrentUserId() {
+        return userDetailsService.getCurrentUser().getId();
+    }
 
     @Transactional
-    @PostMapping(value = "/{id}")
+    @PostMapping(value = "")
     @Operation(
             summary = "Create a post",
             description = "Create a post by providing the user ID and the post content"
     )
-    public ResponseEntity<PostResponse> createPost(@PathVariable Long id,@Valid @RequestBody PostRequest postRequest) {
-        PostEntity postEntity = postServicePort.createPost(id, postRequest);
+    public ResponseEntity<PostResponse> createPost(@Valid @RequestBody PostRequest postRequest) {
+        Long ID_LOGGED = getCurrentUserId();
+        PostEntity postEntity = postServicePort.createPost(ID_LOGGED, postRequest);
         PostResponse postResponse = modelMapper.map(postEntity, PostResponse.class);
         postResponse.setUsername(postEntity.getUserEntity().getUsername());
         postResponse.setCreatedAt(formattedDate(postEntity));
@@ -57,13 +65,13 @@ public class PostControllerAdapter {
     }
 
     @Transactional(readOnly = true)
-    @GetMapping(value = "/{id}")
+    @GetMapping(value = "{userId}")
     @Operation(
             summary = "Get post by ID",
             description = "Get a post by providing the post ID"
     )
-    public ResponseEntity<PostResponse> getPostById(@PathVariable Long id) {
-        PostEntity postEntity = postServicePort.getPostById(id);
+    public ResponseEntity<PostResponse> getPostByUserId(@PathVariable Long userId) {
+        PostEntity postEntity = postServicePort.getPostById(userId);
         PostResponse postResponse = modelMapper.map(postEntity, PostResponse.class);
         postResponse.setCreatedAt(formattedDate(postEntity));
         postResponse.setUsername(postEntity.getUserEntity().getUsername());
@@ -85,13 +93,14 @@ public class PostControllerAdapter {
     }
 
     @Transactional
-    @PutMapping(value = "/{id}")
+    @PutMapping(value = "{postId}")
     @Operation(
-            summary = "Update a post",
+            summary = "Update post by ID",
             description = "Update a post by providing the post ID and the updated post content"
     )
-    public ResponseEntity<PostResponse> updatePost(@PathVariable Long id, @Valid @RequestBody PostRequest postRequest) {
-        PostEntity postEntity = postServicePort.updatePost(id, postRequest.getContent());
+    public ResponseEntity<PostResponse> updatePostById(@Valid @PathVariable Long postId, @RequestBody PostRequest postRequest) {
+        Long ID_LOGGED = getCurrentUserId();
+        PostEntity postEntity = postServicePort.updatePost(postId, postRequest.getContent(), ID_LOGGED);
         PostResponse postResponse = modelMapper.map(postEntity, PostResponse.class);
         postResponse.setUsername(postEntity.getUserEntity().getUsername());
 
@@ -99,23 +108,25 @@ public class PostControllerAdapter {
     }
 
     @Transactional
-    @DeleteMapping(value = "/{id}")
+    @DeleteMapping(value = "")
     @Operation(
             summary = "Delete a post",
             description = "Delete a post by providing the post ID"
     )
-    public ResponseEntity<Void> deletePost(@PathVariable Long id) {
-        postServicePort.deletePost(id);
+    public ResponseEntity<Void> deletePost() {
+        Long ID_LOGGED = getCurrentUserId();
+        postServicePort.deletePost(ID_LOGGED);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    private String formattedDate(PostEntity postEntity) {
+    @NotNull
+    private String formattedDate(@NotNull PostEntity postEntity) {
         SimpleDateFormat formatter = new SimpleDateFormat("h:mm a · MMM d, yyyy");
         formatter.setTimeZone(TimeZone.getTimeZone("America/Lima"));
         return formatter.format(postEntity.getCreatedAt());
     }
-    private List<PostResponse> mapPostsToResponse(List<PostEntity> posts) {
+    private List<PostResponse> mapPostsToResponse(@NotNull List<PostEntity> posts) {
         return posts.stream().map(
                 postEntity -> {
                     PostResponse postResponse = modelMapper.map(postEntity, PostResponse.class);

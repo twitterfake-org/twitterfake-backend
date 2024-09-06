@@ -1,6 +1,7 @@
 package dev.arack.enlace.iam.infrastructure.adapters.input.controllers;
 
 import dev.arack.enlace.iam.application.ports.input.UserServicePort;
+import dev.arack.enlace.iam.application.services.UserDetailsServiceImpl;
 import dev.arack.enlace.iam.domain.model.UserEntity;
 import dev.arack.enlace.iam.infrastructure.adapters.input.dto.request.UserRequest;
 import dev.arack.enlace.iam.infrastructure.adapters.input.dto.response.UserResponse;
@@ -23,6 +24,11 @@ public class UserControllerAdapter {
 
     private final UserServicePort userServicePort;
     private final ModelMapper modelMapper;
+    private final UserDetailsServiceImpl userDetailsService;
+
+    private Long getCurrentUserId() {
+        return userDetailsService.getCurrentUser().getId();
+    }
 
     @GetMapping(value = "")
     @Operation(
@@ -50,24 +56,26 @@ public class UserControllerAdapter {
         return ResponseEntity.ok(userResponse);
     }
 
-    @PutMapping(value = "/{username}")
+    @PutMapping(value = "")
     @Operation(
             summary = "Update user details",
             description = "Updates an existing user's details"
     )
-    public ResponseEntity<String> updateUser(@PathVariable String username, @Valid @RequestBody UserRequest userRequest) {
-        userServicePort.updateUser(username, userRequest);
+    public ResponseEntity<String> updateUser(@Valid @RequestBody UserRequest userRequest) {
+        Long ID_LOGGED = getCurrentUserId();
+        userServicePort.updateUser(ID_LOGGED, userRequest);
 
         return ResponseEntity.ok("User updated successfully");
     }
 
-    @DeleteMapping(value = "/{username}")
+    @DeleteMapping(value = "")
     @Operation(
             summary = "Delete a user",
             description = "Deletes a user from the system"
     )
-    public ResponseEntity<Void> deleteUser(@PathVariable String username) {
-        userServicePort.deleteUser(username);
+    public ResponseEntity<Void> deleteUser() {
+        Long ID_LOGGED = getCurrentUserId();
+        userServicePort.deleteUser(ID_LOGGED);
 
         return ResponseEntity.noContent().build();
     }

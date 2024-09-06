@@ -7,6 +7,7 @@ import java.util.Optional;
 
 public interface UserPersistencePort {
     List<UserEntity> findAll();
+    Optional<UserEntity> findById(Long userId);
     Optional<UserEntity> findByUsername(String username);
     void updateUser(UserEntity userEntity);
     void deleteUser(UserEntity userEntity);

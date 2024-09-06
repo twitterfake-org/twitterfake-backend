@@ -1,5 +1,6 @@
 package dev.arack.enlace.timeline.infrastructure.adapters.output;
 
+import dev.arack.enlace.iam.application.services.UserDetailsServiceImpl;
 import dev.arack.enlace.timeline.application.ports.output.PostPersistencePort;
 import dev.arack.enlace.timeline.domain.model.PostEntity;
 import dev.arack.enlace.timeline.infrastructure.adapters.output.repositories.PostRepository;

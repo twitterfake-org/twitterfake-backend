@@ -14,7 +14,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @Table(name = "follows")
 public class FollowEntity {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

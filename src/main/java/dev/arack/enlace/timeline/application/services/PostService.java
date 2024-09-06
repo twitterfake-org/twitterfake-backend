@@ -5,9 +5,10 @@ import dev.arack.enlace.shared.domain.exceptions.ResourceNotFoundException;
 import dev.arack.enlace.timeline.application.ports.output.PostPersistencePort;
 import dev.arack.enlace.timeline.domain.model.PostEntity;
 import dev.arack.enlace.timeline.application.ports.input.PostServicePort;
-import dev.arack.enlace.timeline.infrastructure.adapters.input.dto.PostRequest;
+import dev.arack.enlace.timeline.infrastructure.adapters.input.dto.request.PostRequest;
 import dev.arack.enlace.timeline.infrastructure.adapters.output.repositories.PostRepository;
 import dev.arack.enlace.iam.domain.model.UserEntity;
+import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -50,9 +51,12 @@ public class PostService implements PostServicePort {
     }
 
     @Override
-    public PostEntity updatePost(Long postId, String content) {
+    public PostEntity updatePost(Long postId, String content, Long userId) {
         PostEntity postEntity = postPersistencePort.findById(postId)
                 .orElseThrow(() -> new ResourceNotFoundException("Post not found"));
+        if (!(postEntity.getUserEntity().getId().equals(userId))) {
+            throw new ValidationException("User not authorized to update post");
+        }
         postEntity.setContent(content);
 
         return postPersistencePort.updatePost(postEntity);

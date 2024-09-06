@@ -22,7 +22,7 @@ import org.springframework.http.HttpHeaders;
         ),
         servers = {
                 @Server(description = "Development Server", url = "http://localhost:8080"),
-                @Server(description = "Production Server", url = "https://t-enlace-dzhhhvgpc8d4gtfu.eastus-01.azurewebsites.net")
+                @Server(description = "Production Server", url = "https://tdenlace-fhefasf4gvb3acgq.eastus-01.azurewebsites.net")
         },
         security = @SecurityRequirement(name = "Bearer Authentication")
 )

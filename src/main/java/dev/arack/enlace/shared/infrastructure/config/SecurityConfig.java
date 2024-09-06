@@ -30,7 +30,7 @@ public class SecurityConfig {
     private final UserDetailsService userDetailsService;
     private final JwtAuthorizationFilter jwtAuthorizationFilter;
     private final JwtUtil jwtUtil;
-    private final String[] ALLOWED_ORIGIN = { "https://t-enlace.web.app", "https://t-enlace.firebaseapp.com" };
+    private final String[] ALLOWED_ORIGIN = { "http://localhost:4200", "https://t-enlace.web.app", "https://t-enlace.firebaseapp.com" };
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, AuthenticationManager authenticationManager) throws Exception {

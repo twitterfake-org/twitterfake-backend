@@ -5,7 +5,7 @@ import dev.arack.enlace.iam.infrastructure.adapters.output.repositories.UserRepo
 import dev.arack.enlace.shared.domain.exceptions.ResourceNotFoundException;
 import dev.arack.enlace.timeline.application.ports.output.PostPersistencePort;
 import dev.arack.enlace.timeline.domain.model.PostEntity;
-import dev.arack.enlace.timeline.infrastructure.adapters.input.dto.PostRequest;
+import dev.arack.enlace.timeline.infrastructure.adapters.input.dto.request.PostRequest;
 import dev.arack.enlace.timeline.infrastructure.adapters.output.repositories.PostRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

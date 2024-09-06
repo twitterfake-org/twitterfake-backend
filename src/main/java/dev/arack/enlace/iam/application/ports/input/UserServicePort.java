@@ -27,15 +27,15 @@ public interface UserServicePort {
     /**
      * Updates the information of a user identified by their username.
      *
-     * @param username The username of the user to be updated.
+     * @param userId The id of the user to be updated.
      * @param userRequest The {@link UserRequest} object containing the new user information.
      */
-    void updateUser(String username, UserRequest userRequest);
+    void updateUser(Long userId, UserRequest userRequest);
 
     /**
      * Deletes a user identified by their username.
      *
-     * @param username The username of the user to be deleted.
+     * @param userId The id of the user to be deleted.
      */
-    void deleteUser(String username);
+    void deleteUser(Long userId);
 }
