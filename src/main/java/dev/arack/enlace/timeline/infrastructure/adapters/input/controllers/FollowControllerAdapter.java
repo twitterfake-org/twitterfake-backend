@@ -8,11 +8,13 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 
 @RestController
@@ -35,11 +37,13 @@ public class FollowControllerAdapter {
             summary = "Follow a user",
             description = "Follow a user by providing the follower and followed user IDs"
     )
-    public ResponseEntity<String> followUser(@PathVariable Long followedId) {
+    public ResponseEntity<HashMap<String, String>> followUser(@PathVariable Long followedId) {
         Long ID_LOGGED = getCurrentUserId();
         followServicePort.followUser(ID_LOGGED, followedId);
+        HashMap<String, String> response = new HashMap<>();
+        response.put("message", "User followed successfully");
 
-        return ResponseEntity.ok("User followed successfully");
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @Transactional
@@ -48,11 +52,13 @@ public class FollowControllerAdapter {
             summary = "Unfollow a user",
             description = "Unfollow a user by providing the follower and followed user IDs"
     )
-    public ResponseEntity<String> unfollowUser(@PathVariable Long followedId) {
+    public ResponseEntity<HashMap<String, String>> unfollowUser(@PathVariable Long followedId) {
         Long ID_LOGGED = getCurrentUserId();
         followServicePort.unfollowUser(ID_LOGGED, followedId);
+        HashMap<String, String> response = new HashMap<>();
+        response.put("message", "User unfollowed successfully");
 
-        return ResponseEntity.ok("User unfollowed successfully");
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @Transactional(readOnly = true)
@@ -68,7 +74,7 @@ public class FollowControllerAdapter {
                 .map(followEntity -> modelMapper.map(followEntity.getFollower(), UserResponse.class))
                 .toList();
 
-        return ResponseEntity.ok(followersResponse);
+        return ResponseEntity.status(HttpStatus.OK).body(followersResponse);
     }
 
     @Transactional(readOnly = true)
@@ -83,6 +89,6 @@ public class FollowControllerAdapter {
         List<UserResponse> followingResponse = followEntities.stream()
                 .map(followEntity -> modelMapper.map(followEntity.getFollowed(), UserResponse.class))
                 .toList();
-        return ResponseEntity.ok(followingResponse);
+        return ResponseEntity.status(HttpStatus.OK).body(followingResponse);
     }
 }

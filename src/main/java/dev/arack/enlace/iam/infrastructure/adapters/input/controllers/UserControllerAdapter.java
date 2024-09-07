@@ -10,10 +10,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 
 @RestController
@@ -41,7 +43,7 @@ public class UserControllerAdapter {
                 .map(userEntity -> modelMapper.map(userEntity, UserResponse.class))
                 .toList();
 
-        return ResponseEntity.ok(userResponses);
+        return ResponseEntity.status(HttpStatus.OK).body(userResponses);
     }
 
     @GetMapping(value = "/{username}")
@@ -53,7 +55,7 @@ public class UserControllerAdapter {
         UserEntity userEntity = userServicePort.getUserByUsername(username);
         UserResponse userResponse = modelMapper.map(userEntity, UserResponse.class);
 
-        return ResponseEntity.ok(userResponse);
+        return ResponseEntity.status(HttpStatus.OK).body(userResponse);
     }
 
     @PutMapping(value = "")
@@ -61,11 +63,13 @@ public class UserControllerAdapter {
             summary = "Update user details",
             description = "Updates an existing user's details"
     )
-    public ResponseEntity<String> updateUser(@Valid @RequestBody UserRequest userRequest) {
+    public ResponseEntity<HashMap<String, String>> updateUser(@Valid @RequestBody UserRequest userRequest) {
         Long ID_LOGGED = getCurrentUserId();
         userServicePort.updateUser(ID_LOGGED, userRequest);
+        HashMap<String, String> response = new HashMap<>();
+        response.put("message", "User updated successfully");
 
-        return ResponseEntity.ok("User updated successfully");
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @DeleteMapping(value = "")
@@ -77,6 +81,6 @@ public class UserControllerAdapter {
         Long ID_LOGGED = getCurrentUserId();
         userServicePort.deleteUser(ID_LOGGED);
 
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
