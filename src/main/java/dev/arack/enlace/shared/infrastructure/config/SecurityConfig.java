@@ -1,23 +1,25 @@
 package dev.arack.enlace.shared.infrastructure.config;
 
-import dev.arack.enlace.shared.infrastructure.jwt.filters.JwtAuthenticationFilter;
-import dev.arack.enlace.shared.infrastructure.jwt.filters.JwtAuthorizationFilter;
+import dev.arack.enlace.iam.application.services.UserDetailsServiceImpl;
+import dev.arack.enlace.shared.infrastructure.jwt.filters.JwtTokenValidator;
 import dev.arack.enlace.shared.infrastructure.jwt.utils.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 
 import java.util.Arrays;
@@ -27,18 +29,14 @@ import java.util.Arrays;
 @EnableMethodSecurity
 @EnableWebSecurity
 public class SecurityConfig {
-    private final UserDetailsService userDetailsService;
-    private final JwtAuthorizationFilter jwtAuthorizationFilter;
+
     private final JwtUtil jwtUtil;
-    private final String[] ALLOWED_ORIGIN = { "http://localhost:4200", "https://t-enlace.web.app", "https://t-enlace.firebaseapp.com" };
+    private static final String[] ALLOWED_ORIGIN = { "http://localhost:4200", "https://...web.app", "https://...firebaseapp.com" };
+    private static final String[] SWAGGER_UI_AUTH_WHITELIST = { "/v3/api-docs/**", "/swagger-ui/**" };
+    private static final String[] ENDPOINTS_ROL_INVITED = { "/api/v1/...", "/api/v1/..." };
 
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, AuthenticationManager authenticationManager) throws Exception {
-
-        JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(jwtUtil);
-        jwtAuthenticationFilter.setAuthenticationManager(authenticationManager);
-        jwtAuthenticationFilter.setFilterProcessesUrl("/login");
-
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
                 .cors(cors -> cors.configurationSource(request -> {
                     CorsConfiguration corsConfig = new CorsConfiguration();
@@ -49,28 +47,32 @@ public class SecurityConfig {
                     return corsConfig;
                 }))
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/login", "/api/v1/auth/**").permitAll();
-                    auth.requestMatchers(ENDPOINTS_ROL_INVITED).permitAll();
-                    auth.requestMatchers(SWAGGER_UI_AUTH_WHITELIST).permitAll();
-                    auth.anyRequest().authenticated();
-                })
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilter(jwtAuthenticationFilter)
-                .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
+                .authorizeHttpRequests(http -> {
+                    // Public EndPoints
+                    http.requestMatchers(HttpMethod.POST, "/api/v1/auth/**").permitAll();
+                    http.requestMatchers(HttpMethod.GET, SWAGGER_UI_AUTH_WHITELIST).permitAll();
+                    http.requestMatchers(HttpMethod.GET, ENDPOINTS_ROL_INVITED).permitAll();
+
+                    // Any other request
+                    http.anyRequest().authenticated();
+                })
+                .addFilterBefore(new JwtTokenValidator(jwtUtil), BasicAuthenticationFilter.class)
                 .build();
     }
-    private static final String[] SWAGGER_UI_AUTH_WHITELIST = { "/v3/api-docs/**", "/swagger-ui/**" };
-    private static final String[] ENDPOINTS_ROL_INVITED = { "/api/v1/authorized-vehicle/get-all/license-plates", "/api/v1/authorized-vehicle/search-by/license-plate" };
     @Bean
-    PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
     }
     @Bean
-    AuthenticationManager authenticationManager(HttpSecurity httpSecurity, PasswordEncoder passwordEncoder) throws Exception {
-        AuthenticationManagerBuilder authenticationManagerBuilder = httpSecurity.getSharedObject(AuthenticationManagerBuilder.class);
-        authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
-
-        return authenticationManagerBuilder.build();
+    public AuthenticationProvider authenticationProvider(UserDetailsServiceImpl userDetailsService) {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setPasswordEncoder(passwordEncoder());
+        provider.setUserDetailsService(userDetailsService);
+        return provider;
+    }
+    @Bean
+    public PasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder();
     }
 }

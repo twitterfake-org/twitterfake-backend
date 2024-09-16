@@ -1,7 +1,7 @@
 package dev.arack.enlace.timeline.application.services;
 
 import dev.arack.enlace.iam.domain.model.UserEntity;
-import dev.arack.enlace.iam.infrastructure.adapters.output.repositories.UserRepository;
+import dev.arack.enlace.iam.infrastructure.adapters.output.repositories.IUserRepository;
 import dev.arack.enlace.shared.domain.exceptions.ResourceNotFoundException;
 import dev.arack.enlace.timeline.application.ports.output.FollowPersistencePort;
 import dev.arack.enlace.timeline.domain.model.FollowEntity;
@@ -18,7 +18,7 @@ import java.util.List;
 public class FollowService implements FollowServicePort {
 
     private final FollowRepository followRepository;
-    private final UserRepository userRepository;
+    private final IUserRepository IUserRepository;
     private final FollowPersistencePort followPersistencePort;
 
     @Override
@@ -26,9 +26,9 @@ public class FollowService implements FollowServicePort {
         if (followerId.equals(followedId)) {
             throw new ValidationException("Cannot follow yourself");
         }
-        UserEntity follower = userRepository.findById(followerId)
+        UserEntity follower = IUserRepository.findById(followerId)
                 .orElseThrow(() -> new ResourceNotFoundException("Follower not found"));
-        UserEntity followed = userRepository.findById(followedId)
+        UserEntity followed = IUserRepository.findById(followedId)
                 .orElseThrow(() -> new ResourceNotFoundException("Followed user not found"));
 
         if (followRepository.existsByFollowerAndFollowed(follower, followed)) {

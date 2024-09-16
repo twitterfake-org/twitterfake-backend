@@ -1,6 +1,6 @@
 package dev.arack.enlace.iam.application.services;
 
-import dev.arack.enlace.iam.application.ports.output.UserPersistencePort;
+import dev.arack.enlace.iam.application.ports.output.IUserPersistencePort;
 import dev.arack.enlace.iam.domain.model.UserEntity;
 import dev.arack.enlace.iam.application.ports.input.UserServicePort;
 import dev.arack.enlace.iam.infrastructure.adapters.input.dto.request.UserRequest;
@@ -14,34 +14,34 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserService implements UserServicePort {
 
-    private final UserPersistencePort userPersistencePort;
+    private final IUserPersistencePort IUserPersistencePort;
 
     @Override
     public List<UserEntity> getAllUsers() {
-        return userPersistencePort.findAll();
+        return IUserPersistencePort.findAll();
     }
 
     @Override
     public UserEntity getUserByUsername(String username) {
-        return userPersistencePort.findByUsername(username)
+        return IUserPersistencePort.findUserEntityByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 
     @Override
     public void updateUser(Long usedId, UserRequest userRequest) {
-        UserEntity userEntity = userPersistencePort.findById(usedId)
+        UserEntity userEntity = IUserPersistencePort.findById(usedId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        userEntity.setFirstName(userRequest.getFirstName());
-        userEntity.setLastName(userRequest.getLastName());
+//        userEntity.setFirstName(userRequest.getFirstName());
+//        userEntity.setLastName(userRequest.getLastName());
 
-        userPersistencePort.updateUser(userEntity);
+        IUserPersistencePort.updateUser(userEntity);
     }
 
     @Override
     public void deleteUser(Long userId) {
-        UserEntity userEntity = userPersistencePort.findById(userId)
+        UserEntity userEntity = IUserPersistencePort.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-        userPersistencePort.deleteUser(userEntity);
+        IUserPersistencePort.deleteUser(userEntity);
     }
 }

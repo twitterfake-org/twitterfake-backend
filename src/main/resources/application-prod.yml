@@ -4,13 +4,11 @@ server:
 spring:
   application:
     name: ENLACE-IN-PRODUCTION
-
   datasource:
-    url: jdbc:mysql://<ENLACE-OF-PRODUCTION>:3306/prod_enlace?useSSL=true&serverTimezone=UTC
-    username: <USERNAME-OF-PRODUCTION>
-    password: <PASSWORD-OF-PRODUCTION>
+    url: jdbc:mysql://databasems.mysql.database.azure.com:3306/dev_enlace?useSSL=true&serverTimezone=UTC
+    username: arack
+    password: jarraj*160104
     driver-class-name: com.mysql.cj.jdbc.Driver
-
   jpa:
     hibernate:
       ddl-auto: create

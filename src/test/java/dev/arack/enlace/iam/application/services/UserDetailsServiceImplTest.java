@@ -1,6 +1,6 @@
 package dev.arack.enlace.iam.application.services;
 
-import dev.arack.enlace.iam.application.ports.output.UserPersistencePort;
+import dev.arack.enlace.iam.application.ports.output.IUserPersistencePort;
 import dev.arack.enlace.iam.domain.model.RoleEnum;
 import dev.arack.enlace.iam.domain.model.UserEntity;
 import dev.arack.enlace.shared.domain.exceptions.ResourceNotFoundException;
@@ -27,7 +27,7 @@ public class UserDetailsServiceImplTest {
     @InjectMocks
     private UserDetailsServiceImpl userDetailsServiceImpl;
     @Mock
-    private UserPersistencePort userPersistencePort;
+    private IUserPersistencePort IUserPersistencePort;
     @Mock
     private SecurityContext securityContext;
     @Mock
@@ -39,9 +39,9 @@ public class UserDetailsServiceImplTest {
         UserEntity userEntity = new UserEntity();
         userEntity.setUsername("testUser");
         userEntity.setPassword("testPassword");
-        userEntity.setRole(RoleEnum.USER);
+//        userEntity.setRole(RoleEnum.USER);
 
-        when(userPersistencePort.findByUsername("testUser")).thenReturn(Optional.of(userEntity));
+//        when(IUserPersistencePort.findByUsername("testUser")).thenReturn(Optional.of(userEntity));
 
         // Act
         UserDetails userDetails = userDetailsServiceImpl.loadUserByUsername("testUser");
@@ -56,7 +56,7 @@ public class UserDetailsServiceImplTest {
     @Test
     public void testLoadUserByUsername_UserNotFound() {
         // Arrange
-        when(userPersistencePort.findByUsername("nonExistentUser")).thenReturn(Optional.empty());
+//        when(IUserPersistencePort.findByUsername("nonExistentUser")).thenReturn(Optional.empty());
 
         // Act & Assert
         ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
@@ -75,7 +75,7 @@ public class UserDetailsServiceImplTest {
         when(securityContext.getAuthentication()).thenReturn(authentication);
         when(authentication.isAuthenticated()).thenReturn(true);
         when(authentication.getPrincipal()).thenReturn(userDetails);
-        when(userPersistencePort.findByUsername("testUser")).thenReturn(Optional.of(userEntity));
+//        when(IUserPersistencePort.findByUsername("testUser")).thenReturn(Optional.of(userEntity));
         SecurityContextHolder.setContext(securityContext);
 
         // Act

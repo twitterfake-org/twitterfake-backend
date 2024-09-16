@@ -5,10 +5,11 @@ import dev.arack.enlace.iam.domain.model.UserEntity;
 import java.util.List;
 import java.util.Optional;
 
-public interface UserPersistencePort {
+public interface IUserPersistencePort {
     List<UserEntity> findAll();
     Optional<UserEntity> findById(Long userId);
-    Optional<UserEntity> findByUsername(String username);
     void updateUser(UserEntity userEntity);
     void deleteUser(UserEntity userEntity);
+    Optional<UserEntity> findUserEntityByUsername(String username);
+    UserEntity save(UserEntity userEntity);
 }
