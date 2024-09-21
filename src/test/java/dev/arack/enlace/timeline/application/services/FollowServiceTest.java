@@ -1,11 +1,11 @@
 package dev.arack.enlace.timeline.application.services;
 
 
-import dev.arack.enlace.iam.domain.model.UserEntity;
-import dev.arack.enlace.iam.infrastructure.adapters.output.repositories.IUserRepository;
+import dev.arack.enlace.iam.domain.aggregate.UserEntity;
+import dev.arack.enlace.iam.infrastructure.repository.UserRepository;
 import dev.arack.enlace.timeline.application.ports.output.FollowPersistencePort;
 import dev.arack.enlace.timeline.domain.model.FollowEntity;
-import dev.arack.enlace.timeline.infrastructure.adapters.output.repositories.FollowRepository;
+import dev.arack.enlace.timeline.infrastructure.repository.FollowRepository;
 import jakarta.validation.ValidationException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,7 +28,7 @@ class FollowServiceTest {
     @Mock
     private FollowPersistencePort followPersistencePort;
     @Mock
-    private IUserRepository IUserRepository;
+    private UserRepository UserRepository;
 
     @Test
     void followUser_Success() {
@@ -39,8 +39,8 @@ class FollowServiceTest {
         UserEntity followed = new UserEntity();
         follower.setId(followerId);
         followed.setId(followedId);
-        when(IUserRepository.findById(followerId)).thenReturn(Optional.of(follower));
-        when(IUserRepository.findById(followedId)).thenReturn(Optional.of(followed));
+        when(UserRepository.findById(followerId)).thenReturn(Optional.of(follower));
+        when(UserRepository.findById(followedId)).thenReturn(Optional.of(followed));
         when(followRepository.existsByFollowerAndFollowed(follower, followed)).thenReturn(false);
 
         // Act
@@ -59,8 +59,8 @@ class FollowServiceTest {
         UserEntity followed = new UserEntity();
         follower.setId(followerId);
         followed.setId(followedId);
-        when(IUserRepository.findById(followerId)).thenReturn(Optional.of(follower));
-        when(IUserRepository.findById(followedId)).thenReturn(Optional.of(followed));
+        when(UserRepository.findById(followerId)).thenReturn(Optional.of(follower));
+        when(UserRepository.findById(followedId)).thenReturn(Optional.of(followed));
         when(followRepository.existsByFollowerAndFollowed(follower, followed)).thenReturn(true);
 
         // Act & Assert

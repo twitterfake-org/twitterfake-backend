@@ -1,13 +1,13 @@
 package dev.arack.enlace.timeline.application.services;
 
-import dev.arack.enlace.iam.infrastructure.adapters.output.repositories.IUserRepository;
-import dev.arack.enlace.shared.domain.exceptions.ResourceNotFoundException;
+import dev.arack.enlace.iam.infrastructure.repository.UserRepository;
+import dev.arack.enlace.shared.exceptions.ResourceNotFoundException;
 import dev.arack.enlace.timeline.application.ports.output.PostPersistencePort;
 import dev.arack.enlace.timeline.domain.model.PostEntity;
 import dev.arack.enlace.timeline.application.ports.input.PostServicePort;
-import dev.arack.enlace.timeline.infrastructure.adapters.input.dto.request.PostRequest;
-import dev.arack.enlace.timeline.infrastructure.adapters.output.repositories.PostRepository;
-import dev.arack.enlace.iam.domain.model.UserEntity;
+import dev.arack.enlace.timeline.application.dto.request.PostRequest;
+import dev.arack.enlace.timeline.infrastructure.repository.PostRepository;
+import dev.arack.enlace.iam.domain.aggregate.UserEntity;
 import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,12 +19,12 @@ import java.util.List;
 public class PostService implements PostServicePort {
 
     private final PostRepository postRepository;
-    private final IUserRepository IUserRepository;
+    private final UserRepository UserRepository;
     private final PostPersistencePort postPersistencePort;
 
     @Override
     public PostEntity createPost(Long postId, PostRequest postRequest) {
-        UserEntity userEntity = IUserRepository.findById(postId)
+        UserEntity userEntity = UserRepository.findById(postId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         PostEntity postEntity = new PostEntity();

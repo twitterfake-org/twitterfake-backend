@@ -1,12 +1,12 @@
 package dev.arack.enlace.timeline.application.services;
 
-import dev.arack.enlace.iam.domain.model.UserEntity;
-import dev.arack.enlace.iam.infrastructure.adapters.output.repositories.IUserRepository;
-import dev.arack.enlace.shared.domain.exceptions.ResourceNotFoundException;
+import dev.arack.enlace.iam.domain.aggregate.UserEntity;
+import dev.arack.enlace.iam.infrastructure.repository.UserRepository;
+import dev.arack.enlace.shared.exceptions.ResourceNotFoundException;
 import dev.arack.enlace.timeline.application.ports.output.PostPersistencePort;
 import dev.arack.enlace.timeline.domain.model.PostEntity;
-import dev.arack.enlace.timeline.infrastructure.adapters.input.dto.request.PostRequest;
-import dev.arack.enlace.timeline.infrastructure.adapters.output.repositories.PostRepository;
+import dev.arack.enlace.timeline.application.dto.request.PostRequest;
+import dev.arack.enlace.timeline.infrastructure.repository.PostRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -28,7 +28,7 @@ class PostServiceTest {
     @Mock
     private PostRepository postRepository;
     @Mock
-    private IUserRepository IUserRepository;
+    private UserRepository UserRepository;
     @Mock
     private PostPersistencePort postPersistencePort;
 
@@ -42,7 +42,7 @@ class PostServiceTest {
         postEntity.setContent("Test content");
         UserEntity userEntity = new UserEntity();
         userEntity.setUsername("user1");
-        when(IUserRepository.findById(postId)).thenReturn(Optional.of(userEntity));
+        when(UserRepository.findById(postId)).thenReturn(Optional.of(userEntity));
         when(postPersistencePort.createPost(any(PostEntity.class))).thenReturn(postEntity);
 
         // Act
@@ -51,14 +51,14 @@ class PostServiceTest {
         // Assert
         assertNotNull(createdPost);
         assertEquals(postRequest.getContent(), createdPost.getContent());
-        verify(IUserRepository, times(1)).findById(postId);
+        verify(UserRepository, times(1)).findById(postId);
     }
     @Test
     void createPost_UserNotFound() {
         // Arrange
         Long postId = 1L;
         PostRequest postRequest = new PostRequest();
-        when(IUserRepository.findById(postId)).thenReturn(Optional.empty());
+        when(UserRepository.findById(postId)).thenReturn(Optional.empty());
 
         // Act & Assert
         Exception exception = assertThrows(RuntimeException.class, () -> {

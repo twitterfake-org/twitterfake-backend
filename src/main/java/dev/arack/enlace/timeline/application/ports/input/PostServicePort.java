@@ -1,7 +1,7 @@
 package dev.arack.enlace.timeline.application.ports.input;
 
 import dev.arack.enlace.timeline.domain.model.PostEntity;
-import dev.arack.enlace.timeline.infrastructure.adapters.input.dto.request.PostRequest;
+import dev.arack.enlace.timeline.application.dto.request.PostRequest;
 
 import java.util.List;
 

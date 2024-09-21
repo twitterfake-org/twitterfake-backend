@@ -3,14 +3,25 @@ server:
 
 spring:
   application:
-    name: Enlace
-
+    name: ENLACE_DEV
   datasource:
-    url: jdbc:mysql://localhost:3306/dev_enlace?useSSL=true&serverTimezone=UTC
+    url: jdbc:h2:mem:enlace;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
     username: root
     password: root
-    driver-class-name: com.mysql.cj.jdbc.Driver
-
+    driver-class-name: org.h2.Driver
+#  datasource:
+#    url: jdbc:mysql://localhost:3306/enlace?useSSL=true&serverTimezone=UTC
+#    username: root
+#    password: root
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+      settings:
+        trace: false
+        web-allow-others: true
+#        web-admin-password: admin
   jpa:
     hibernate:
       ddl-auto: update
@@ -20,6 +31,11 @@ spring:
       hibernate:
         jdbc:
           time_zone: UTC
+    database-platform: org.hibernate.dialect.H2Dialect
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
 
 jwt:
   secret:

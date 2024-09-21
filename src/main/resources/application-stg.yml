@@ -6,7 +6,7 @@ spring:
     name: Enlace
 
   datasource:
-    url: jdbc:mysql://localhost:3306/stg_enlace?useSSL=true&serverTimezone=UTC
+    url: jdbc:mysql://localhost:3306/enlace?useSSL=true&serverTimezone=UTC
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
