@@ -1,17 +1,26 @@
 package dev.arack.enlace.timeline.application.dto.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import dev.arack.enlace.timeline.domain.entities.PostEntity;
+import java.util.List;
 
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
-public class PostResponse {
-    private Long id;
-    private String content;
-    private String username;
-    private String createdAt;
+public record PostResponse (
+    Long id,
+    String content,
+    String username,
+    String createdAt
+) {
+    public static PostResponse fromPostEntity(PostEntity postEntity) {
+        return new PostResponse(
+                postEntity.getId(),
+                postEntity.getContent(),
+                postEntity.getUserEntity().getUsername(),
+                postEntity.getFormattedCreatedAt()
+        );
+    }
+
+    public static List<PostResponse> fromPostEntityList(List<PostEntity> postEntityList) {
+        return postEntityList.stream()
+                .map(PostResponse::fromPostEntity)
+                .toList();
+    }
 }

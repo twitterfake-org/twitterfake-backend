@@ -166,86 +166,14 @@
         </dependencies>
     </dependencyManagement>
 
-    <profiles>
-        <!-- Developer Profile -->
-        <profile>
-            <id>dev</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <properties>
-                <build.profile.id>dev</build.profile.id>
-                <profileActive>dev</profileActive>
-            </properties>
-            <build>
-                <resources>
-                    <resource>
-                        <directory>src/main/resources</directory>
-                        <filtering>true</filtering>
-                        <includes>
-                            <include>application-dev.yml</include>
-                        </includes>
-                    </resource>
-                </resources>
-            </build>
-        </profile>
-
-        <!-- Stage Profile -->
-        <profile>
-            <id>stg</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
-            <properties>
-                <build.profile.id>stg</build.profile.id>
-                <profileActive>stg</profileActive>
-            </properties>
-            <build>
-                <resources>
-                    <resource>
-                        <directory>src/main/resources</directory>
-                        <filtering>true</filtering>
-                        <includes>
-                            <include>application-stg.yml</include>
-                        </includes>
-                    </resource>
-                </resources>
-            </build>
-        </profile>
-
-        <!-- Production Profile -->
-        <profile>
-            <id>prod</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
-            <properties>
-                <build.profile.id>prod</build.profile.id>
-                <profileActive>prod</profileActive>
-            </properties>
-            <build>
-                <resources>
-                    <resource>
-                        <directory>src/main/resources</directory>
-                        <filtering>true</filtering>
-                        <includes>
-                            <include>application-prod.yml</include>
-                        </includes>
-                    </resource>
-                </resources>
-            </build>
-        </profile>
-    </profiles>
-
     <build>
-        <!-- Activate the profiles filter -->
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
                 <excludes>
-                    <!-- Commentary para Spring Boot / Commentary para Maven -->
-                    <exclude>application-*.yml</exclude>
+                    <!-- Commentary para Development / unCommentary para Production -->
+                    <!--<exclude>application-*.yml</exclude>-->
                 </excludes>
             </resource>
         </resources>

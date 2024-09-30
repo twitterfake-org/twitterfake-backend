@@ -1,14 +1,20 @@
 package dev.arack.enlace.iam.application.dto.response;
 
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
-public class UserResponse {
-    private Long id;
-    private String firstName;
-    private String lastName;
-    private String username;
-    private String role;
+import dev.arack.enlace.iam.domain.aggregates.UserEntity;
+
+import java.util.List;
+
+public record UserResponse (
+    Long id,
+    String username,
+    List<String> role
+) {
+    public static UserResponse of(UserEntity user) {
+        return new UserResponse(
+            user.getId(),
+            user.getUsername(),
+            user.getRoles().stream().map(role -> role.getRoleName().name()).toList()
+        );
+    }
 }

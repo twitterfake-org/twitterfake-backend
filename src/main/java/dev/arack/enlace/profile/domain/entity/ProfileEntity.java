@@ -1,16 +1,16 @@
 package dev.arack.enlace.profile.domain.entity;
 
+import dev.arack.enlace.iam.domain.aggregates.UserEntity;
 import dev.arack.enlace.profile.domain.valueobject.FullName;
 import dev.arack.enlace.profile.domain.valueobject.Address;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.validation.constraints.Email;
+import lombok.*;
 
+@Entity
 @Setter
 @Getter
-@Entity
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "profiles")
@@ -32,31 +32,25 @@ public class ProfileEntity {
     })
     private Address address;
 
-//    @Embedded
-//    private EmailAddress email;
+    @Email
+    private String email;
 
-//    public void Profile(String firstName, String lastName, String street, String number, String city, String zipCode, String country) {
-//        this.name = new FullName(firstName, lastName);
-//        this.address = new StreetAddress(street, number, city, zipCode, country);
-//    }
+    @OneToOne
+    @JoinColumn(name = "user_id", nullable = false, unique = true)
+    private UserEntity user;
 
-    public void updateFullName(String firstName, String lastName) {
-        this.fullName = new FullName(firstName, lastName);
+    public String getFullName() {
+        return fullName.firstName() + " " + fullName.lastName();
     }
 
-//    public void updateEmail(String email) {
-//        this.email = new EmailAddress(email);
-//    }
+    public String getAddress() {
+        return String.format("%s %s %s %s %s",
+                address.street(), address.number(), address.city(), address.zipCode(), address.country());
+    }
 
-//    public void updateAddress(String streetAddress, String city, String zipCode, String country) {
-//        this.address = new StreetAddress(streetAddress, city, zipCode, country);
-//    }
-//
-//    public String getFullName() {
-//        return name.getFullName();
-//    }
-//
-//    public String getStreetAddress() {
-//        return address.getStreetAddress();
-//    }
+    public ProfileEntity(FullName fullName) {
+        this.fullName = new FullName(fullName.firstName(), fullName.lastName());
+        this.email = "";
+        this.address = new Address("", "", "", "", "");
+    }
 }

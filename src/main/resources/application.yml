@@ -1,3 +1,26 @@
+server:
+  port: 8080
+
 spring:
-  profiles:
-    active: @profileActive@
+  application:
+    name: ENLACE
+  datasource:
+    url: jdbc:mysql://databasems.mysql.database.azure.com:3306/enlace?useSSL=true&serverTimezone=UTC
+    username: arack
+    password: jarraj*160104
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create
+    open-in-view: false
+    show-sql: true
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+
+jwt:
+  secret:
+    key: 8ebc070bb4a53120cd451cf58f4f48067decc4077a4b8d1f2a6632305cc4c299
+  time:
+    expiration: 86400000 # 1 day in milliseconds

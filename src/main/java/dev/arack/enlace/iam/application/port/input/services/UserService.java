@@ -1,7 +1,7 @@
 package dev.arack.enlace.iam.application.port.input.services;
 
-import dev.arack.enlace.iam.domain.aggregate.UserEntity;
-import dev.arack.enlace.iam.application.dto.request.UserRequest;
+import dev.arack.enlace.iam.application.dto.response.UserResponse;
+import dev.arack.enlace.iam.domain.aggregates.UserEntity;
 
 import java.util.List;
 
@@ -9,12 +9,13 @@ import java.util.List;
  * Interface for user management services, providing methods to retrieve, update, and delete user information.
  */
 public interface UserService {
+
     /**
      * Retrieves a list of all users.
      *
-     * @return A {@link List} of {@link UserEntity} objects representing all users.
+     * @return A {@link List} of {@link UserResponse} objects representing all users.
      */
-    List<UserEntity> getAllUsers();
+    List<UserResponse> getAllUsers();
 
     /**
      * Retrieves a user by their username.
@@ -22,20 +23,18 @@ public interface UserService {
      * @param username The username of the user to be retrieved.
      * @return A {@link UserEntity} object representing the user with the specified username.
      */
-    UserEntity getUserByUsername(String username);
+    UserResponse getUserByUsername(String username);
 
     /**
      * Updates the information of a user identified by their username.
      *
-     * @param userId The id of the user to be updated.
-     * @param userRequest The {@link UserRequest} object containing the new user information.
+     * @param username The {@link String} object containing the new user information.
      */
-    void updateUser(Long userId, UserRequest userRequest);
+    void updateUsername(String username);
 
     /**
      * Deletes a user identified by their username.
      *
-     * @param userId The id of the user to be deleted.
      */
-    void deleteUser(Long userId);
+    void deleteUser();
 }
