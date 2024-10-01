@@ -1,7 +1,7 @@
 package dev.arack.enlace.iam.infrastructure.config;
 
-import dev.arack.enlace.iam.infrastructure.jwt.filters.JwtTokenFilter;
-import dev.arack.enlace.iam.infrastructure.jwt.utils.JwtUtil;
+import dev.arack.enlace.iam.infrastructure.jwt.filter.JwtTokenFilter;
+import dev.arack.enlace.iam.application.port.output.util.JwtUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -34,6 +34,7 @@ import java.util.Arrays;
 public class SecurityConfig {
 
     private final JwtUtil jwtUtil;
+    private final UserDetailsService userDetailsService;
     private static final String[] ALLOWED_ORIGIN = { "http://localhost:8081", "https://...web.app", "https://...firebaseapp.com" };
     private static final String[] SWAGGER_UI_AUTH_WHITELIST = { "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html" };
     private static final String[] ENDPOINTS_ROL_INVITED = { "/api/v1/...", "/api/v1/..." };
@@ -66,7 +67,7 @@ public class SecurityConfig {
                     e.accessDeniedHandler((request, response, accessDeniedException) ->
                             response.sendError(HttpServletResponse.SC_FORBIDDEN, "Access Denied!"));
                 })
-                .addFilterBefore(new JwtTokenFilter(jwtUtil), BasicAuthenticationFilter.class)
+                .addFilterBefore(new JwtTokenFilter(jwtUtil, userDetailsService), BasicAuthenticationFilter.class)
                 .build();
     }
     @Bean

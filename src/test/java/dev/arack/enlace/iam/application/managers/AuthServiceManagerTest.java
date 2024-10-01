@@ -9,7 +9,7 @@ import dev.arack.enlace.iam.domain.aggregates.UserEntity;
 import dev.arack.enlace.iam.domain.entities.RoleEntity;
 import dev.arack.enlace.iam.domain.events.UserCreatedEvent;
 import dev.arack.enlace.iam.domain.valueobject.RoleEnum;
-import dev.arack.enlace.iam.infrastructure.jwt.utils.JwtUtil;
+import dev.arack.enlace.iam.application.port.output.util.JwtUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -66,7 +66,7 @@ class AuthServiceManagerTest {
         // Mockear la encriptación de la contraseña
         when(passwordEncoder.encode(signupRequest.password())).thenReturn("encodedPassword");
 
-        when(authService.loadUserByUsername(username)).thenReturn(any(User.class));
+//        when(authService.loadUserByUsername(username)).thenReturn(any(User.class));
 
         // Ajustar el stubbing para aceptar cualquier Authentication
         when(jwtUtil.generateToken(any(Authentication.class))).thenReturn("mockedToken");

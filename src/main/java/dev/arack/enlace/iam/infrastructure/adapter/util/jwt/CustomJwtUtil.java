@@ -1,4 +1,4 @@
-package dev.arack.enlace.iam.infrastructure.jwt.utils;
+package dev.arack.enlace.iam.infrastructure.adapter.util.jwt;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -6,15 +6,19 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
+import dev.arack.enlace.iam.application.port.output.util.JwtUtil;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+@Log4j2
 @Component
 public class CustomJwtUtil implements JwtUtil {
     @Value("${jwt.secret.key}")
@@ -26,7 +30,10 @@ public class CustomJwtUtil implements JwtUtil {
     public String generateToken(Authentication authentication) {
         Algorithm algorithm = Algorithm.HMAC256(this.privateKey);
 
-        String username = authentication.getPrincipal().toString();
+        // Cast principal to UserDetails
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String username = userDetails.getUsername();
+        log.info("Username: {}", username);
         String authorities = authentication.getAuthorities()
                 .stream()
                 .map(GrantedAuthority::getAuthority)

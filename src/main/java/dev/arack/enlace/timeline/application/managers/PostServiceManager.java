@@ -1,19 +1,16 @@
 package dev.arack.enlace.timeline.application.managers;
 
-import dev.arack.enlace.iam.application.facades.AuthenticationFacade;
 import dev.arack.enlace.iam.application.port.output.persistence.UserPersistence;
-import dev.arack.enlace.iam.infrastructure.repository.UserJpaRepository;
+import dev.arack.enlace.profile.application.port.output.client.UserClient;
 import dev.arack.enlace.shared.exceptions.ResourceNotFoundException;
 import dev.arack.enlace.timeline.application.dto.response.PostResponse;
 import dev.arack.enlace.timeline.application.port.output.persistence.PostPersistence;
 import dev.arack.enlace.timeline.domain.entities.PostEntity;
 import dev.arack.enlace.timeline.application.port.input.services.PostService;
 import dev.arack.enlace.timeline.application.dto.request.PostRequest;
-import dev.arack.enlace.timeline.infrastructure.repository.PostJpaRepository;
 import dev.arack.enlace.iam.domain.aggregates.UserEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,15 +22,14 @@ public class PostServiceManager implements PostService {
 
     private final UserPersistence userPersistence;
     private final PostPersistence postPersistence;
-    private final AuthenticationFacade authenticationFacade;
-
-    private Long getCurrentUserId() {
-        return authenticationFacade.getCurrentUser().getId();
-    }
+    private final UserClient userClient;
 
     @Override
     public PostResponse createPost(PostRequest postRequest) {
-        UserEntity userEntity = userPersistence.findById(getCurrentUserId())
+
+        Long currentUserId = userClient.getCurrentUser().id();
+
+        UserEntity userEntity = userPersistence.findById(currentUserId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         PostEntity postEntity = new PostEntity();

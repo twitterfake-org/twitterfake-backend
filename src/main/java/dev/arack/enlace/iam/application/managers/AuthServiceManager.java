@@ -1,6 +1,7 @@
 package dev.arack.enlace.iam.application.managers;
 
 import dev.arack.enlace.iam.application.port.input.services.AuthService;
+import dev.arack.enlace.iam.application.port.input.services.UserService;
 import dev.arack.enlace.iam.application.port.output.persistence.RolePersistence;
 import dev.arack.enlace.iam.application.port.output.persistence.UserPersistence;
 import dev.arack.enlace.iam.domain.entities.RoleEntity;
@@ -9,7 +10,7 @@ import dev.arack.enlace.iam.domain.aggregates.UserEntity;
 import dev.arack.enlace.iam.application.dto.request.LoginRequest;
 import dev.arack.enlace.iam.application.dto.request.SignupRequest;
 import dev.arack.enlace.iam.application.dto.response.AuthResponse;
-import dev.arack.enlace.iam.infrastructure.jwt.utils.JwtUtil;
+import dev.arack.enlace.iam.application.port.output.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.ApplicationEventPublisher;
@@ -21,6 +22,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -35,6 +37,7 @@ public class AuthServiceManager implements AuthService {
     private final RolePersistence rolePersistence;
     private final PasswordEncoder passwordEncoder;
     private final ApplicationEventPublisher eventPublisher;
+    private final UserDetailsService userDetailsService;
     private final JwtUtil jwtUtil;
 
     public AuthResponse signup(SignupRequest signupRequest) {
@@ -67,32 +70,12 @@ public class AuthServiceManager implements AuthService {
         return new AuthResponse(username, "User logged successfully", true, accessToken);
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserEntity userEntity = userPersistence.findUserEntityByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("El usuario " + username + " no existe."));
-
-        List<GrantedAuthority> authorities = new ArrayList<>();
-        userEntity.getRoles().forEach(role -> {
-            authorities.add(new SimpleGrantedAuthority("ROLE_".concat(role.getRoleName().name())));
-            role.getPermissionList().forEach(permission -> authorities.add(new SimpleGrantedAuthority(permission.getName())));
-        });
-
-        return new User(userEntity.getUsername(),
-                userEntity.getPassword(),
-                userEntity.isEnabled(),
-                userEntity.isAccountNoExpired(),
-                userEntity.isCredentialNoExpired(),
-                userEntity.isAccountNoLocked(),
-                authorities);
-    }
-
     private Authentication authenticate(String username, String password) {
-        UserDetails userDetails = this.loadUserByUsername(username);
-
+        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        log.info("User details: {}", userDetails);
         if (userDetails == null || !passwordEncoder.matches(password, userDetails.getPassword())) {
             throw new BadCredentialsException("Invalid username or password");
         }
-        return new UsernamePasswordAuthenticationToken(username, null, userDetails.getAuthorities());
+        return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
 }

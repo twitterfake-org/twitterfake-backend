@@ -9,7 +9,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 /**
  * Interface for authentication services, providing methods for user login and registration.
  */
-public interface AuthService extends UserDetailsService {
+public interface AuthService {
     /**
      * Logs in a user with the provided credentials.
      *

@@ -1,10 +1,10 @@
 package dev.arack.enlace.profile.application.managers;
 
-import dev.arack.enlace.iam.application.facades.AuthenticationFacade;
 import dev.arack.enlace.iam.domain.aggregates.UserEntity;
 import dev.arack.enlace.profile.application.dto.request.ProfileRequest;
 import dev.arack.enlace.profile.application.dto.response.ProfileResponse;
 import dev.arack.enlace.profile.application.port.input.services.ProfileService;
+import dev.arack.enlace.profile.application.port.output.client.UserClient;
 import dev.arack.enlace.profile.domain.entity.ProfileEntity;
 import dev.arack.enlace.profile.domain.valueobject.Address;
 import dev.arack.enlace.profile.domain.valueobject.FullName;
@@ -20,11 +20,7 @@ import org.springframework.stereotype.Service;
 public class ProfileServiceManager implements ProfileService {
 
     private final ProfileJpaRepository profileJpaRepository;
-    private final AuthenticationFacade authenticationFacade;
-
-    private Long getCurrentUserId() {
-        return authenticationFacade.getCurrentUser().getId();
-    }
+    private final UserClient userClient;
 
     @Override
     public void createProfile(UserEntity user) {
@@ -42,7 +38,8 @@ public class ProfileServiceManager implements ProfileService {
     @Override
     public ProfileResponse getProfile() {
 
-        ProfileEntity profileEntity = profileJpaRepository.findById(getCurrentUserId())
+        Long currentUserId = userClient.getCurrentUser().id();
+        ProfileEntity profileEntity = profileJpaRepository.findById(currentUserId)
                 .orElseThrow(() -> new ResourceNotFoundException("Profile not found"));
 
         return ProfileResponse.fromEntity(profileEntity);
@@ -51,7 +48,8 @@ public class ProfileServiceManager implements ProfileService {
     @Override
     public ProfileResponse updateProfile(ProfileRequest profileRequest) {
 
-        ProfileEntity profileEntity = profileJpaRepository.findById(getCurrentUserId())
+        Long currentUserId = userClient.getCurrentUser().id();
+        ProfileEntity profileEntity = profileJpaRepository.findById(currentUserId)
                 .orElseThrow(() -> new ResourceNotFoundException("Profile not found"));
 
         profileEntity.setFullName(new FullName(
@@ -73,7 +71,9 @@ public class ProfileServiceManager implements ProfileService {
 
     @Override
     public void deleteProfile() {
-        profileJpaRepository.deleteById(getCurrentUserId());
+
+        Long currentUserId = userClient.getCurrentUser().id();
+        profileJpaRepository.deleteById(currentUserId);
     }
 
     @Override

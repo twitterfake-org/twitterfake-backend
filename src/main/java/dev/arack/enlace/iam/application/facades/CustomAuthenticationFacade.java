@@ -5,8 +5,10 @@ import dev.arack.enlace.iam.domain.aggregates.UserEntity;
 import dev.arack.enlace.shared.exceptions.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -22,11 +24,11 @@ public class CustomAuthenticationFacade implements AuthenticationFacade {
         if (authentication != null && authentication.isAuthenticated()
                 && !(authentication instanceof AnonymousAuthenticationToken)) {
 
-            String username = (String) authentication.getPrincipal();
-            return userPersistence.findUserEntityByUsername(username)
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            return userPersistence.findUserEntityByUsername(userDetails.getUsername())
                     .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         } else {
-            throw new ResourceNotFoundException("User not found");
+            throw new AuthenticationCredentialsNotFoundException("User is not authenticated");
         }
     }
 }

@@ -1,6 +1,7 @@
 package dev.arack.enlace.iam.domain.aggregates;
 
 import dev.arack.enlace.iam.domain.entities.RoleEntity;
+import dev.arack.enlace.iam.domain.entities.UserDetailsEntity;
 import dev.arack.enlace.profile.domain.entity.ProfileEntity;
 import dev.arack.enlace.profile.domain.entity.ConnectionEntity;
 import dev.arack.enlace.timeline.domain.entities.PostEntity;
@@ -10,11 +11,12 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.domain.AbstractAggregateRoot;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Entity
 @AllArgsConstructor
@@ -86,5 +88,14 @@ public class UserEntity extends AbstractAggregateRoot<UserEntity> {
                 .accountNoLocked(false)
                 .credentialNoExpired(true)
                 .build();
+    }
+
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return roles.stream().flatMap(role -> Stream.concat(
+                    Stream.of(new SimpleGrantedAuthority("ROLE_" + role.getRoleName().name())),
+                    role.getPermissionList().stream()
+                        .map(permission -> new SimpleGrantedAuthority(permission.getName()))
+                ))
+                .collect(Collectors.toList());
     }
 }
