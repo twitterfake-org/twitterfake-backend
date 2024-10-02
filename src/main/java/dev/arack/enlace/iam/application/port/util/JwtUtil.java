@@ -1,4 +1,4 @@
-package dev.arack.enlace.iam.application.port.output.util;
+package dev.arack.enlace.iam.application.port.util;
 
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;

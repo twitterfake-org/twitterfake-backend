@@ -1,8 +1,7 @@
-package dev.arack.enlace.iam.infrastructure.jwt.filter;
+package dev.arack.enlace.iam.infrastructure.security.filter;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
-import dev.arack.enlace.iam.application.port.input.services.AuthService;
-import dev.arack.enlace.iam.application.port.output.util.JwtUtil;
+import dev.arack.enlace.iam.application.port.util.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,7 +23,7 @@ import java.io.IOException;
 import java.util.Collection;
 
 @RequiredArgsConstructor
-public class JwtTokenFilter extends OncePerRequestFilter {
+public class JwtTokenSecurityFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
     private final UserDetailsService userDetailsService;

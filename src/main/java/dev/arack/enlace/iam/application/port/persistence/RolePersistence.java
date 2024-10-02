@@ -1,4 +1,4 @@
-package dev.arack.enlace.iam.application.port.output.persistence;
+package dev.arack.enlace.iam.application.port.persistence;
 
 import dev.arack.enlace.iam.domain.entities.RoleEntity;
 import dev.arack.enlace.iam.domain.valueobject.RoleEnum;

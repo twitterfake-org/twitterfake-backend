@@ -1,6 +1,6 @@
-package dev.arack.enlace.iam.infrastructure.adapter.sql;
+package dev.arack.enlace.iam.infrastructure.adapter.persistence.sql;
 
-import dev.arack.enlace.iam.application.port.output.persistence.UserPersistence;
+import dev.arack.enlace.iam.application.port.persistence.UserPersistence;
 import dev.arack.enlace.iam.domain.aggregates.UserEntity;
 import dev.arack.enlace.iam.infrastructure.repository.UserJpaRepository;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +11,7 @@ import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-public class UserPersistenceSql implements UserPersistence {
+public class UserSqlPersistence implements UserPersistence {
 
     private final UserJpaRepository userJpaRepository;
 

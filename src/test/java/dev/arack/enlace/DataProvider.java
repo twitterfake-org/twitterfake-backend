@@ -1,14 +1,10 @@
 package dev.arack.enlace;
 
-import ch.qos.logback.core.encoder.EchoEncoder;
-import dev.arack.enlace.iam.application.dto.request.LoginRequest;
-import dev.arack.enlace.iam.application.dto.request.SignupRequest;
 import dev.arack.enlace.iam.domain.aggregates.UserEntity;
 import dev.arack.enlace.iam.domain.entities.PermissionEntity;
 import dev.arack.enlace.iam.domain.entities.RoleEntity;
 import dev.arack.enlace.iam.domain.valueobject.RoleEnum;
 
-import java.util.Arrays;
 import java.util.Set;
 
 public class DataProvider {
@@ -41,10 +37,6 @@ public class DataProvider {
                 .username("username")
                 .password("encodedPassword")
                 .roles(roleEntityMock())
-                .enabled(true)
-                .accountNoLocked(true)
-                .accountNoExpired(true)
-                .credentialNoExpired(true)
                 .build();
     }
 }

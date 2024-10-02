@@ -1,6 +1,6 @@
-package dev.arack.enlace.iam.infrastructure.adapter.sql;
+package dev.arack.enlace.iam.infrastructure.adapter.persistence.sql;
 
-import dev.arack.enlace.iam.application.port.output.persistence.RolePersistence;
+import dev.arack.enlace.iam.application.port.persistence.RolePersistence;
 import dev.arack.enlace.iam.domain.entities.RoleEntity;
 import dev.arack.enlace.iam.domain.valueobject.RoleEnum;
 import dev.arack.enlace.iam.infrastructure.repository.RoleJpaRepository;
@@ -12,7 +12,7 @@ import java.util.Set;
 
 @Component
 @RequiredArgsConstructor
-public class RolePersistenceSql implements RolePersistence {
+public class RoleSqlPersistence implements RolePersistence {
 
     private final RoleJpaRepository roleJpaRepository;
 

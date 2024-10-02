@@ -2,6 +2,7 @@ package dev.arack.enlace.iam.domain.aggregates;
 
 import dev.arack.enlace.iam.domain.entities.RoleEntity;
 import dev.arack.enlace.iam.domain.entities.UserDetailsEntity;
+import dev.arack.enlace.iam.domain.valueobject.RoleEnum;
 import dev.arack.enlace.profile.domain.entity.ProfileEntity;
 import dev.arack.enlace.profile.domain.entity.ConnectionEntity;
 import dev.arack.enlace.timeline.domain.entities.PostEntity;
@@ -37,17 +38,9 @@ public class UserEntity extends AbstractAggregateRoot<UserEntity> {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "is_enabled")
-    private boolean enabled;
-
-    @Column(name = "account_no_expired")
-    private boolean accountNoExpired;
-
-    @Column(name = "account_no_locked")
-    private boolean accountNoLocked;
-
-    @Column(name = "credential_no_expired")
-    private boolean credentialNoExpired;
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_details_id", referencedColumnName = "id")
+    private UserDetailsEntity userDetails;
 
     @ManyToMany(targetEntity = RoleEntity.class, fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
@@ -78,15 +71,17 @@ public class UserEntity extends AbstractAggregateRoot<UserEntity> {
         this.profile = profile;
     }
 
-    public static UserEntity fromUsernamePasswordAndRoles(String username, String password, Set<RoleEntity> roles) {
+    public static UserEntity fromUsernameAndPassword(String username, String password) {
         return UserEntity.builder()
                 .username(username)
                 .password(password)
-                .roles(roles)
-                .enabled(true)
-                .accountNoExpired(true)
-                .accountNoLocked(false)
-                .credentialNoExpired(true)
+                .roles(Set.of(RoleEntity.builder().roleName(RoleEnum.USER).build()))
+                .userDetails(UserDetailsEntity.builder()
+                        .enabled(true)
+                        .accountNoExpired(true)
+                        .accountNoLocked(false)
+                        .credentialNoExpired(true)
+                        .build())
                 .build();
     }
 
@@ -96,6 +91,6 @@ public class UserEntity extends AbstractAggregateRoot<UserEntity> {
                     role.getPermissionList().stream()
                         .map(permission -> new SimpleGrantedAuthority(permission.getName()))
                 ))
-                .collect(Collectors.toList());
+                .toList();
     }
 }

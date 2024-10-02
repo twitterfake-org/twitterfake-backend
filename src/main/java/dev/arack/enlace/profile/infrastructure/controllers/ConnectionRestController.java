@@ -1,12 +1,10 @@
 package dev.arack.enlace.profile.infrastructure.controllers;
 
-import dev.arack.enlace.iam.application.facades.AuthenticationFacade;
 import dev.arack.enlace.timeline.application.dto.response.FollowResponse;
 import dev.arack.enlace.profile.application.port.input.services.ConnectionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;

@@ -3,13 +3,14 @@ package dev.arack.enlace.iam.application.managers;
 import dev.arack.enlace.DataProvider;
 import dev.arack.enlace.iam.application.dto.request.SignupRequest;
 import dev.arack.enlace.iam.application.dto.response.AuthResponse;
-import dev.arack.enlace.iam.application.port.output.persistence.RolePersistence;
-import dev.arack.enlace.iam.application.port.output.persistence.UserPersistence;
+import dev.arack.enlace.iam.application.internal.managers.AuthManager;
+import dev.arack.enlace.iam.application.port.persistence.RolePersistence;
+import dev.arack.enlace.iam.application.port.persistence.UserPersistence;
 import dev.arack.enlace.iam.domain.aggregates.UserEntity;
 import dev.arack.enlace.iam.domain.entities.RoleEntity;
 import dev.arack.enlace.iam.domain.events.UserCreatedEvent;
 import dev.arack.enlace.iam.domain.valueobject.RoleEnum;
-import dev.arack.enlace.iam.application.port.output.util.JwtUtil;
+import dev.arack.enlace.iam.application.port.util.JwtUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -17,7 +18,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
@@ -29,10 +29,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class AuthServiceManagerTest {
+class AuthManagerTest {
 
     @InjectMocks
-    private AuthServiceManager authService;
+    private AuthManager authService;
     @Mock
     private JwtUtil jwtUtil;
     @Mock

@@ -1,6 +1,7 @@
 package dev.arack.enlace.iam.infrastructure.controllers;
 
-import dev.arack.enlace.iam.application.managers.AuthServiceManager;
+import dev.arack.enlace.iam.application.dto.request.UserRequest;
+import dev.arack.enlace.iam.application.internal.managers.AuthManager;
 import dev.arack.enlace.iam.application.dto.request.LoginRequest;
 import dev.arack.enlace.iam.application.dto.request.SignupRequest;
 import dev.arack.enlace.iam.application.dto.response.AuthResponse;
@@ -17,10 +18,10 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/api/v1/auth", produces = MediaType.APPLICATION_JSON_VALUE)
-@Tag(name = "Auth Controller", description = "API for authentication operations")
+@Tag(name = "User Access Controller", description = "API for authentication operations")
 public class AuthRestController {
 
-    private final AuthServiceManager userDetailsService;
+    private final AuthManager userDetailsService;
 
     @Transactional
     @PostMapping(value = "/sign-up")
@@ -28,8 +29,8 @@ public class AuthRestController {
             summary = "Sign up a new user",
             description = "Sign up a new user by providing the user's details"
     )
-    public ResponseEntity<AuthResponse> signup(@Valid @RequestBody SignupRequest signupRequest) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(userDetailsService.signup(signupRequest));
+    public ResponseEntity<AuthResponse> signup(@Valid @RequestBody UserRequest userRequest) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(userDetailsService.signup(userRequest));
     }
 
 //    @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -39,7 +40,7 @@ public class AuthRestController {
             summary = "Log in a user",
             description = "Log in a user by providing the user's credentials"
     )
-    public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(userDetailsService.login(loginRequest));
+    public ResponseEntity<AuthResponse> login(@Valid @RequestBody UserRequest userRequest) {
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(userDetailsService.login(userRequest));
     }
 }

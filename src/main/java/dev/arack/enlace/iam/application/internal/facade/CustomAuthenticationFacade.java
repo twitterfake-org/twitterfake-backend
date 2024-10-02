@@ -1,6 +1,6 @@
-package dev.arack.enlace.iam.application.facades;
+package dev.arack.enlace.iam.application.internal.facade;
 
-import dev.arack.enlace.iam.application.port.output.persistence.UserPersistence;
+import dev.arack.enlace.iam.application.port.persistence.UserPersistence;
 import dev.arack.enlace.iam.domain.aggregates.UserEntity;
 import dev.arack.enlace.shared.exceptions.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,6 @@ public class CustomAuthenticationFacade implements AuthenticationFacade {
 
     private final UserPersistence userPersistence;
 
-    @Override
     public UserEntity getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 

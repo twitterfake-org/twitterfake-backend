@@ -1,6 +1,6 @@
 package dev.arack.enlace.timeline.application.managers;
 
-import dev.arack.enlace.iam.application.port.output.persistence.UserPersistence;
+import dev.arack.enlace.iam.application.port.persistence.UserPersistence;
 import dev.arack.enlace.profile.application.port.output.client.UserClient;
 import dev.arack.enlace.shared.exceptions.ResourceNotFoundException;
 import dev.arack.enlace.timeline.application.dto.response.PostResponse;

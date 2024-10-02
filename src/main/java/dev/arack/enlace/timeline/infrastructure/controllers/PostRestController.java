@@ -1,6 +1,6 @@
 package dev.arack.enlace.timeline.infrastructure.controllers;
 
-import dev.arack.enlace.iam.application.managers.AuthServiceManager;
+import dev.arack.enlace.iam.application.internal.managers.AuthManager;
 import dev.arack.enlace.timeline.application.port.input.services.PostService;
 import dev.arack.enlace.timeline.application.dto.request.PostRequest;
 import dev.arack.enlace.timeline.application.dto.response.PostResponse;
@@ -27,7 +27,7 @@ public class PostRestController {
 
     private final PostService postService;
     private final ModelMapper modelMapper;
-    private final AuthServiceManager userDetailsService;
+    private final AuthManager userDetailsService;
 
     @Transactional
     @PostMapping(value = "")

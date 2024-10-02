@@ -1,9 +1,10 @@
-package dev.arack.enlace.iam.application.handlers;
+package dev.arack.enlace.iam.application.internal.handler;
 
-import dev.arack.enlace.iam.application.port.output.persistence.UserPersistence;
+import dev.arack.enlace.iam.application.port.persistence.UserPersistence;
 import dev.arack.enlace.iam.domain.aggregates.UserEntity;
 import dev.arack.enlace.iam.domain.entities.PermissionEntity;
 import dev.arack.enlace.iam.domain.entities.RoleEntity;
+import dev.arack.enlace.iam.domain.entities.UserDetailsEntity;
 import dev.arack.enlace.iam.domain.events.UserCreatedEvent;
 import dev.arack.enlace.iam.domain.valueobject.RoleEnum;
 import dev.arack.enlace.iam.infrastructure.repository.RoleJpaRepository;
@@ -62,10 +63,12 @@ public class SeedingEventHandler {
         UserEntity user = UserEntity.builder()
                 .username("string")
                 .password(passwordEncoder.encode("string"))
-                .enabled(true)
-                .accountNoExpired(true)
-                .accountNoLocked(true)
-                .credentialNoExpired(true)
+                .userDetails(UserDetailsEntity.builder()
+                        .enabled(true)
+                        .accountNoExpired(true)
+                        .credentialNoExpired(true)
+                        .accountNoLocked(false)
+                        .build())
                 .roles(Set.of(roleAdmin))
                 .build();
 

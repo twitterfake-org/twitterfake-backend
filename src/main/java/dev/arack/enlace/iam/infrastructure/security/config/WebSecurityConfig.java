@@ -1,7 +1,7 @@
-package dev.arack.enlace.iam.infrastructure.config;
+package dev.arack.enlace.iam.infrastructure.security.config;
 
-import dev.arack.enlace.iam.infrastructure.jwt.filter.JwtTokenFilter;
-import dev.arack.enlace.iam.application.port.output.util.JwtUtil;
+import dev.arack.enlace.iam.infrastructure.security.filter.JwtTokenSecurityFilter;
+import dev.arack.enlace.iam.application.port.util.JwtUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -31,7 +31,7 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 @EnableMethodSecurity
 @EnableWebSecurity
-public class SecurityConfig {
+public class WebSecurityConfig {
 
     private final JwtUtil jwtUtil;
     private final UserDetailsService userDetailsService;
@@ -67,7 +67,7 @@ public class SecurityConfig {
                     e.accessDeniedHandler((request, response, accessDeniedException) ->
                             response.sendError(HttpServletResponse.SC_FORBIDDEN, "Access Denied!"));
                 })
-                .addFilterBefore(new JwtTokenFilter(jwtUtil, userDetailsService), BasicAuthenticationFilter.class)
+                .addFilterBefore(new JwtTokenSecurityFilter(jwtUtil, userDetailsService), BasicAuthenticationFilter.class)
                 .build();
     }
     @Bean

@@ -1,4 +1,4 @@
-package dev.arack.enlace.iam.application.facades;
+package dev.arack.enlace.iam.application.internal.facade;
 
 import dev.arack.enlace.iam.domain.aggregates.UserEntity;
 

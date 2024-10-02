@@ -1,6 +1,6 @@
 package dev.arack.enlace.profile.application.managers;
 
-import dev.arack.enlace.iam.application.port.output.persistence.UserPersistence;
+import dev.arack.enlace.iam.application.port.persistence.UserPersistence;
 import dev.arack.enlace.iam.domain.aggregates.UserEntity;
 import dev.arack.enlace.profile.application.port.input.services.ConnectionService;
 import dev.arack.enlace.profile.application.port.output.client.UserClient;

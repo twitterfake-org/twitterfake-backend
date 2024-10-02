@@ -1,15 +1,17 @@
-package dev.arack.enlace.iam.application.port.input.services;
+package dev.arack.enlace.iam.application.services;
 
 import dev.arack.enlace.iam.application.dto.response.UserResponse;
 import dev.arack.enlace.iam.domain.aggregates.UserEntity;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;
 
 /**
  * Interface for user management services, providing methods to retrieve, update, and delete user information.
  */
-public interface UserService {
+public interface UserService extends UserDetailsService {
 
+    void createUser(String username, String password);
     /**
      * Retrieves a list of all users.
      *
