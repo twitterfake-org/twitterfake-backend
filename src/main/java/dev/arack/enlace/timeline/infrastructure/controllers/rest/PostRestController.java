@@ -1,6 +1,5 @@
 package dev.arack.enlace.timeline.infrastructure.controllers.rest;
 
-import dev.arack.enlace.iam.application.core.managers.AuthManager;
 import dev.arack.enlace.timeline.application.port.input.services.PostService;
 import dev.arack.enlace.timeline.application.dto.request.PostRequest;
 import dev.arack.enlace.timeline.application.dto.response.PostResponse;
@@ -9,7 +8,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;

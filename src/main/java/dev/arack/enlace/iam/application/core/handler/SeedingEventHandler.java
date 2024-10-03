@@ -7,7 +7,7 @@ import dev.arack.enlace.iam.domain.entities.RoleEntity;
 import dev.arack.enlace.iam.domain.entities.UserDetailsEntity;
 import dev.arack.enlace.iam.domain.events.UserCreatedEvent;
 import dev.arack.enlace.iam.domain.valueobject.RoleEnum;
-import dev.arack.enlace.iam.infrastructure.repository.RoleJpaRepository;
+import dev.arack.enlace.iam.infrastructure.repository.JpaRoleRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -23,7 +23,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class SeedingEventHandler {
     private final UserPersistence userPersistence;
-    private final RoleJpaRepository rolePersistencePort;
+    private final JpaRoleRepository rolePersistencePort;
     private final PasswordEncoder passwordEncoder;
     private final ApplicationEventPublisher eventPublisher;
 

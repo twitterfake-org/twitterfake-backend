@@ -2,6 +2,7 @@ package dev.arack.enlace.iam.application.managers;
 
 import dev.arack.enlace.DataProvider;
 import dev.arack.enlace.iam.application.dto.request.SignupRequest;
+import dev.arack.enlace.iam.application.dto.request.UserRequest;
 import dev.arack.enlace.iam.application.dto.response.AuthResponse;
 import dev.arack.enlace.iam.application.core.managers.AuthManager;
 import dev.arack.enlace.iam.application.port.output.persistence.RolePersistence;
@@ -47,8 +48,8 @@ class AuthManagerTest {
     @Test
     void testSignup() {
         // Arrange
-        SignupRequest signupRequest = new SignupRequest("username", "password", List.of(RoleEnum.USER));
-        String username = signupRequest.username();
+        UserRequest userRequest = new UserRequest("username", "password");
+        String username = userRequest.username();
         UserEntity userEntity = DataProvider.userEntityMock();
 
         // Mocking
@@ -64,7 +65,7 @@ class AuthManagerTest {
         when(userPersistence.save(any(UserEntity.class))).thenReturn(mockUserEntity);
 
         // Mockear la encriptación de la contraseña
-        when(passwordEncoder.encode(signupRequest.password())).thenReturn("encodedPassword");
+        when(passwordEncoder.encode(userRequest.password())).thenReturn("encodedPassword");
 
 //        when(authService.loadUserByUsername(username)).thenReturn(any(User.class));
 
@@ -72,7 +73,7 @@ class AuthManagerTest {
         when(tokenUtil.generateToken(any(Authentication.class))).thenReturn("mockedToken");
 
         // Act
-        AuthResponse authResponse = authService.signup(signupRequest);
+        AuthResponse authResponse = authService.signup(userRequest);
 
         // Assert
         assertNotNull(authResponse);
@@ -81,7 +82,7 @@ class AuthManagerTest {
         assertTrue(authResponse.status());
 
         // Verificar interacciones
-        verify(passwordEncoder, times(1)).encode(signupRequest.password());
+        verify(passwordEncoder, times(1)).encode(userRequest.password());
         verify(userPersistence, times(1)).save(any(UserEntity.class));
         verify(eventPublisher, times(1)).publishEvent(any(UserCreatedEvent.class));
         verify(tokenUtil, times(1)).generateToken(any(Authentication.class));

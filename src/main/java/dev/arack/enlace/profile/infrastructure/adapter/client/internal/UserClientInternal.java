@@ -2,6 +2,7 @@ package dev.arack.enlace.profile.infrastructure.adapter.client.internal;
 
 import dev.arack.enlace.iam.application.dto.response.UserResponse;
 import dev.arack.enlace.iam.application.port.input.facade.AuthenticationFacade;
+import dev.arack.enlace.iam.domain.aggregates.UserEntity;
 import dev.arack.enlace.profile.application.port.output.client.UserClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -14,6 +15,11 @@ public class UserClientInternal implements UserClient {
 
     @Override
     public UserResponse getCurrentUser() {
-        return UserResponse.of(authenticationFacade.getCurrentUser());
+        UserEntity currentUser = authenticationFacade.getCurrentUser();
+        if (currentUser == null) {
+            // Maneja el caso en el que no haya un usuario autenticado
+            return null; // O puedes devolver una respuesta predeterminada
+        }
+        return UserResponse.fromEntity(currentUser);
     }
 }

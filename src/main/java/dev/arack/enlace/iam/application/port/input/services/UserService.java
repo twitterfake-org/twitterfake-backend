@@ -2,6 +2,7 @@ package dev.arack.enlace.iam.application.port.input.services;
 
 import dev.arack.enlace.iam.application.dto.response.UserResponse;
 import dev.arack.enlace.iam.domain.aggregates.UserEntity;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;
@@ -39,4 +40,6 @@ public interface UserService extends UserDetailsService {
      *
      */
     void deleteUser();
+
+    UserDetails loadGuestUser();
 }

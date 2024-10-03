@@ -23,13 +23,13 @@ public class ProfileServiceManager implements ProfileService {
     private final UserClient userClient;
 
     @Override
-    public void createProfile(UserEntity user) {
+    public void createProfile(UserEntity userEntity) {
 
         ProfileEntity profile = ProfileEntity.builder()
-                .fullName(new FullName(user.getUsername(), ""))
+                .fullName(new FullName(userEntity.getUsername(), ""))
                 .email("example@mail.com")
                 .address(new Address("", "", "", "", ""))
-                .user(user)
+                .user(userEntity)
                 .build();
 
         jpaProfileRepository.save(profile);

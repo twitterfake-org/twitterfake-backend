@@ -13,13 +13,13 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "roles")
+@Table
 public class RoleEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "role_name", length = 9, nullable = false, unique = true)
+    @Column(length = 9, nullable = false, unique = true)
     @Enumerated(EnumType.STRING)
     private RoleEnum roleName;
 

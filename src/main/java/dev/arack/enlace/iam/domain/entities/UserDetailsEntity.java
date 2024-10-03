@@ -3,6 +3,12 @@ package dev.arack.enlace.iam.domain.entities;
 import dev.arack.enlace.iam.domain.aggregates.UserEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Stream;
 
 @Entity
 @AllArgsConstructor
@@ -16,20 +22,27 @@ public class UserDetailsEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Atributos de seguridad
-    @Column(name = "is_enabled")
+    @Column
     private boolean enabled;
 
-    @Column(name = "account_no_expired")
+    @Column
     private boolean accountNoExpired;
 
-    @Column(name = "account_no_locked")
+    @Column
     private boolean accountNoLocked;
 
-    @Column(name = "credential_no_expired")
+    @Column
     private boolean credentialNoExpired;
 
-    // Relación inversa
     @OneToOne(mappedBy = "userDetails", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private UserEntity userEntity;
+
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return userEntity.getRoles().stream().flatMap(role -> Stream.concat(
+                        Stream.of(new SimpleGrantedAuthority("ROLE_" + role.getRoleName().name())),
+                        role.getPermissionList().stream()
+                                .map(permission -> new SimpleGrantedAuthority(permission.getName()))
+                ))
+                .toList();
+    }
 }

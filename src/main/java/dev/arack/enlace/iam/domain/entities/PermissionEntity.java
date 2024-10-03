@@ -9,12 +9,12 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "permissions")
+@Table
 public class PermissionEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name", length = 16, nullable = false, unique = true, updatable = false)
+    @Column(length = 16, nullable = false, unique = true, updatable = false)
     private String name;
 }

@@ -3,7 +3,7 @@ package dev.arack.enlace.iam.infrastructure.adapter.persistence.sql;
 import dev.arack.enlace.iam.application.port.output.persistence.RolePersistence;
 import dev.arack.enlace.iam.domain.entities.RoleEntity;
 import dev.arack.enlace.iam.domain.valueobject.RoleEnum;
-import dev.arack.enlace.iam.infrastructure.repository.RoleJpaRepository;
+import dev.arack.enlace.iam.infrastructure.repository.JpaRoleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -14,15 +14,15 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class SqlRolePersistence implements RolePersistence {
 
-    private final RoleJpaRepository roleJpaRepository;
+    private final JpaRoleRepository jpaRoleRepository;
 
     @Override
     public Set<RoleEntity> findRoleEntitiesByRoleNameIn(List<RoleEnum> roleList) {
-        return roleJpaRepository.findRoleEntitiesByRoleNameIn(roleList);
+        return jpaRoleRepository.findRoleEntitiesByRoleNameIn(roleList);
     }
 
     @Override
     public void saveAll(Set<RoleEntity> roleEntitySet) {
-        roleJpaRepository.saveAll(roleEntitySet);
+        jpaRoleRepository.saveAll(roleEntitySet);
     }
 }

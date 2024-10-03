@@ -1,9 +1,7 @@
 package dev.arack.enlace.iam.application.port.input.services;
 
-import dev.arack.enlace.iam.application.dto.request.SignupRequest;
 import dev.arack.enlace.iam.application.dto.request.UserRequest;
 import dev.arack.enlace.iam.domain.aggregates.UserEntity;
-import dev.arack.enlace.iam.application.dto.request.LoginRequest;
 import dev.arack.enlace.iam.application.dto.response.AuthResponse;
 
 /**

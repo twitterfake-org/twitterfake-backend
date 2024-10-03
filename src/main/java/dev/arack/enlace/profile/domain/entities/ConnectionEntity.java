@@ -13,7 +13,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "follows")
+@Table
 public class ConnectionEntity extends AuditableModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

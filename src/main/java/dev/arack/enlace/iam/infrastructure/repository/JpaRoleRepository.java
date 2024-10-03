@@ -10,7 +10,7 @@ import java.util.Optional;
 import java.util.Set;
 
 @Repository
-public interface RoleJpaRepository extends JpaRepository<RoleEntity, Long> {
+public interface JpaRoleRepository extends JpaRepository<RoleEntity, Long> {
     Set<RoleEntity> findRoleEntitiesByRoleNameIn(List<RoleEnum> roleList);
 
     Optional<RoleEntity> findByRoleName(RoleEnum roleEnum);

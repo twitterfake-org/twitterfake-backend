@@ -5,11 +5,14 @@ import dev.arack.enlace.iam.application.port.input.facade.AuthenticationFacade;
 import dev.arack.enlace.iam.application.port.input.services.UserService;
 import dev.arack.enlace.iam.application.port.output.persistence.UserPersistence;
 import dev.arack.enlace.iam.domain.aggregates.UserEntity;
+import dev.arack.enlace.iam.domain.entities.UserDetailsEntity;
 import dev.arack.enlace.iam.domain.events.UserCreatedEvent;
 import dev.arack.enlace.shared.exceptions.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -17,11 +20,13 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 @Log4j2
 @Service
 @RequiredArgsConstructor
-public class UsersManager implements UserService {
+public class UserManager implements UserService {
 
     private final UserPersistence userPersistence;
     private final ApplicationEventPublisher eventPublisher;
@@ -43,7 +48,7 @@ public class UsersManager implements UserService {
         List<UserResponse> userResponseList = new ArrayList<>();
 
         for (UserEntity userEntity : userEntities) {
-            userResponseList.add(UserResponse.of(userEntity));
+            userResponseList.add(UserResponse.fromEntity(userEntity));
         }
         return userResponseList;
     }
@@ -53,20 +58,20 @@ public class UsersManager implements UserService {
         UserEntity userEntity = userPersistence.findUserEntityByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-        return UserResponse.of(userEntity);
+        return UserResponse.fromEntity(userEntity);
     }
 
     @Override
     public void updateUsername(String username) {
-//        if (userPersistencePort.existsByUsername(username)) {
-//            throw new ResourceNotFoundException("Username already exists");
-//        }
+        if (userPersistence.existsByUsername(username)) {
+            throw new ResourceNotFoundException("Username already exists");
+        }
         Long userId = authenticationFacade.getCurrentUser().getId();
         UserEntity userEntity = userPersistence.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         userEntity.setUsername(username);
-        userPersistence.updateUser(userEntity);
+        userPersistence.save(userEntity);
     }
 
     @Override
@@ -75,6 +80,22 @@ public class UsersManager implements UserService {
         UserEntity userEntity = userPersistence.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found" + userId));
         userPersistence.deleteUser(userEntity);
+    }
+
+    @Override
+    public UserDetails loadGuestUser() {
+        String username = "guest#" + UUID.randomUUID();
+        String password = UUID.randomUUID().toString();
+        List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_GUEST"));
+        return User.builder()
+                .username(username)
+                .password(password)
+                .disabled(false)
+                .accountExpired(false)
+                .accountLocked(false)
+                .credentialsExpired(false)
+                .authorities(authorities)
+                .build();
     }
 
     @Override
@@ -88,6 +109,6 @@ public class UsersManager implements UserService {
                 userEntity.getUserDetails().isAccountNoExpired(),
                 userEntity.getUserDetails().isCredentialNoExpired(),
                 userEntity.getUserDetails().isAccountNoLocked(),
-                userEntity.getAuthorities());
+                userEntity.getUserDetails().getAuthorities());
     }
 }

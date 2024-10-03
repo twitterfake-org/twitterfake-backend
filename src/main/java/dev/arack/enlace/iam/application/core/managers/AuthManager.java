@@ -10,10 +10,14 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.UUID;
 
 @Log4j2
 @Service
@@ -44,6 +48,21 @@ public class AuthManager implements AuthService {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         return new AuthResponse(username, "User logged successfully", true, accessToken);
+    }
+
+    public AuthResponse guestLogin() {
+
+        UserDetails guestUser = userService.loadGuestUser();
+        Authentication authentication = new UsernamePasswordAuthenticationToken(guestUser, null, guestUser.getAuthorities());
+
+        String accessToken = tokenUtil.generateToken(authentication);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        return new AuthResponse("guest", "Guest logged successfully", true, accessToken);
+    }
+
+    public void logout() {
+        SecurityContextHolder.clearContext();
     }
 
     private Authentication authenticate(String username, String password) {

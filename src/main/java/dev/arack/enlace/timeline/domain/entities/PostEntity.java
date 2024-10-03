@@ -17,13 +17,13 @@ import java.util.TimeZone;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "posts")
+@Table
 public class PostEntity extends AuditableModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "content", nullable = false)
+    @Column(nullable = false)
     private String content;
 
     @ManyToOne(targetEntity = UserEntity.class)

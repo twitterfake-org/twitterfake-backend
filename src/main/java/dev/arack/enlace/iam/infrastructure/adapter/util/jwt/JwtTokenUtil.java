@@ -30,7 +30,6 @@ public class JwtTokenUtil implements TokenUtil {
     public String generateToken(Authentication authentication) {
         Algorithm algorithm = Algorithm.HMAC256(this.privateKey);
 
-        // Cast principal to UserDetails
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         String username = userDetails.getUsername();
         log.info("Username: {}", username);

@@ -10,7 +10,7 @@ public record UserResponse (
     String username,
     List<String> role
 ) {
-    public static UserResponse of(UserEntity user) {
+    public static UserResponse fromEntity(UserEntity user) {
         return new UserResponse(
             user.getId(),
             user.getUsername(),

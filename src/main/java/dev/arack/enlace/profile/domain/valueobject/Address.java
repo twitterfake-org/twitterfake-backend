@@ -10,10 +10,6 @@ public record Address(
         String zipCode,
         String country
 ) {
-//    public Address() {
-//        this(null, null, null, null, null);
-//    }
-
     public Address {
         if (street == null) {
             throw new IllegalArgumentException("Street must not be null or blank");
@@ -31,8 +27,4 @@ public record Address(
             throw new IllegalArgumentException("Country must not be null or blank");
         }
     }
-
-//    public Address(String street, String city, String zipCode, String country) {
-//        this(street, null, city, zipCode, country);
-//    }
 }

@@ -24,21 +24,21 @@ import java.util.stream.Stream;
 @Builder
 @Getter
 @Setter
-@Table(name = "users")
+@Table
 @EntityListeners(AuditingEntityListener.class)
 public class UserEntity extends AbstractAggregateRoot<UserEntity> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "username", unique = true, nullable = false, length = 50)
+    @Column(unique = true, nullable = false, length = 50)
     private String username;
 
-    @Column(name = "password", nullable = false)
+    @Column(nullable = false)
     private String password;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_details_id", referencedColumnName = "id")
+    @JoinColumn(referencedColumnName = "id")
     private UserDetailsEntity userDetails;
 
     @ManyToMany(targetEntity = RoleEntity.class, fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
@@ -66,8 +66,8 @@ public class UserEntity extends AbstractAggregateRoot<UserEntity> {
     protected Date updatedAt;
 
     public void setProfile(ProfileEntity profile) {
-        profile.setUser(this);
         this.profile = profile;
+        profile.setUser(this);
     }
 
     public static UserEntity fromUsernameAndPassword(String username, String password) {
@@ -82,14 +82,5 @@ public class UserEntity extends AbstractAggregateRoot<UserEntity> {
                         .credentialNoExpired(true)
                         .build())
                 .build();
-    }
-
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles.stream().flatMap(role -> Stream.concat(
-                    Stream.of(new SimpleGrantedAuthority("ROLE_" + role.getRoleName().name())),
-                    role.getPermissionList().stream()
-                        .map(permission -> new SimpleGrantedAuthority(permission.getName()))
-                ))
-                .toList();
     }
 }
