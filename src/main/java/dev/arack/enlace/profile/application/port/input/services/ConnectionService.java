@@ -1,7 +1,7 @@
 package dev.arack.enlace.profile.application.port.input.services;
 
 import dev.arack.enlace.timeline.application.dto.response.FollowResponse;
-import dev.arack.enlace.profile.domain.entity.ConnectionEntity;
+import dev.arack.enlace.profile.domain.entities.ConnectionEntity;
 
 import java.util.List;
 

@@ -1,7 +1,7 @@
 package dev.arack.enlace.iam.infrastructure.security.filter;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
-import dev.arack.enlace.iam.application.port.util.JwtUtil;
+import dev.arack.enlace.iam.application.port.output.util.TokenUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,7 +25,7 @@ import java.util.Collection;
 @RequiredArgsConstructor
 public class JwtTokenSecurityFilter extends OncePerRequestFilter {
 
-    private final JwtUtil jwtUtil;
+    private final TokenUtil tokenUtil;
     private final UserDetailsService userDetailsService;
 
     @Override
@@ -36,11 +36,11 @@ public class JwtTokenSecurityFilter extends OncePerRequestFilter {
 
         if (jwtToken != null) {
             jwtToken = jwtToken.substring(7);
-            DecodedJWT decodedJWT = jwtUtil.validateToken(jwtToken);
+            DecodedJWT decodedJWT = tokenUtil.validateToken(jwtToken);
 
-            String username = jwtUtil.extractUsername(decodedJWT);
+            String username = tokenUtil.extractUsername(decodedJWT);
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-            String stringAuthorities = jwtUtil.getSpecificClaim(decodedJWT, "authorities").asString();
+            String stringAuthorities = tokenUtil.getSpecificClaim(decodedJWT, "authorities").asString();
 
             Collection<? extends GrantedAuthority> authorities = AuthorityUtils.commaSeparatedStringToAuthorityList(stringAuthorities);
             SecurityContext context = SecurityContextHolder.createEmptyContext();

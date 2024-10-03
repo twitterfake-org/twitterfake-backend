@@ -1,6 +1,6 @@
 package dev.arack.enlace.profile.application.dto.response;
 
-import dev.arack.enlace.profile.domain.entity.ProfileEntity;
+import dev.arack.enlace.profile.domain.aggregates.ProfileEntity;
 
 public record ProfileResponse(
         Long id,

@@ -1,6 +1,6 @@
 package dev.arack.enlace.profile.application.port.output.persistence;
 
-import dev.arack.enlace.profile.domain.entity.ProfileEntity;
+import dev.arack.enlace.profile.domain.aggregates.ProfileEntity;
 import java.util.Optional;
 
 public interface ProfilePersistence {

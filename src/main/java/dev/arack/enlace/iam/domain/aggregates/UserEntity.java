@@ -3,8 +3,8 @@ package dev.arack.enlace.iam.domain.aggregates;
 import dev.arack.enlace.iam.domain.entities.RoleEntity;
 import dev.arack.enlace.iam.domain.entities.UserDetailsEntity;
 import dev.arack.enlace.iam.domain.valueobject.RoleEnum;
-import dev.arack.enlace.profile.domain.entity.ProfileEntity;
-import dev.arack.enlace.profile.domain.entity.ConnectionEntity;
+import dev.arack.enlace.profile.domain.aggregates.ProfileEntity;
+import dev.arack.enlace.profile.domain.entities.ConnectionEntity;
 import dev.arack.enlace.timeline.domain.entities.PostEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -16,7 +16,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.*;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Entity

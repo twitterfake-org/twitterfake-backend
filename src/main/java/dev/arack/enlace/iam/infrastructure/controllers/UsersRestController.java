@@ -1,6 +1,6 @@
 package dev.arack.enlace.iam.infrastructure.controllers;
 
-import dev.arack.enlace.iam.application.services.UserService;
+import dev.arack.enlace.iam.application.port.input.services.UserService;
 import dev.arack.enlace.iam.application.dto.response.UserResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

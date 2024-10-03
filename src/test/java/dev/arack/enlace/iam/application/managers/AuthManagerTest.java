@@ -3,14 +3,14 @@ package dev.arack.enlace.iam.application.managers;
 import dev.arack.enlace.DataProvider;
 import dev.arack.enlace.iam.application.dto.request.SignupRequest;
 import dev.arack.enlace.iam.application.dto.response.AuthResponse;
-import dev.arack.enlace.iam.application.internal.managers.AuthManager;
-import dev.arack.enlace.iam.application.port.persistence.RolePersistence;
-import dev.arack.enlace.iam.application.port.persistence.UserPersistence;
+import dev.arack.enlace.iam.application.core.managers.AuthManager;
+import dev.arack.enlace.iam.application.port.output.persistence.RolePersistence;
+import dev.arack.enlace.iam.application.port.output.persistence.UserPersistence;
 import dev.arack.enlace.iam.domain.aggregates.UserEntity;
 import dev.arack.enlace.iam.domain.entities.RoleEntity;
 import dev.arack.enlace.iam.domain.events.UserCreatedEvent;
 import dev.arack.enlace.iam.domain.valueobject.RoleEnum;
-import dev.arack.enlace.iam.application.port.util.JwtUtil;
+import dev.arack.enlace.iam.application.port.output.util.TokenUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -34,7 +34,7 @@ class AuthManagerTest {
     @InjectMocks
     private AuthManager authService;
     @Mock
-    private JwtUtil jwtUtil;
+    private TokenUtil tokenUtil;
     @Mock
     private PasswordEncoder passwordEncoder;
     @Mock
@@ -69,7 +69,7 @@ class AuthManagerTest {
 //        when(authService.loadUserByUsername(username)).thenReturn(any(User.class));
 
         // Ajustar el stubbing para aceptar cualquier Authentication
-        when(jwtUtil.generateToken(any(Authentication.class))).thenReturn("mockedToken");
+        when(tokenUtil.generateToken(any(Authentication.class))).thenReturn("mockedToken");
 
         // Act
         AuthResponse authResponse = authService.signup(signupRequest);
@@ -84,6 +84,6 @@ class AuthManagerTest {
         verify(passwordEncoder, times(1)).encode(signupRequest.password());
         verify(userPersistence, times(1)).save(any(UserEntity.class));
         verify(eventPublisher, times(1)).publishEvent(any(UserCreatedEvent.class));
-        verify(jwtUtil, times(1)).generateToken(any(Authentication.class));
+        verify(tokenUtil, times(1)).generateToken(any(Authentication.class));
     }
 }

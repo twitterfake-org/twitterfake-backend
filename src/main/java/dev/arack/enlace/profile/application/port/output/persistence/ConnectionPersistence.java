@@ -1,7 +1,7 @@
 package dev.arack.enlace.profile.application.port.output.persistence;
 
 import dev.arack.enlace.iam.domain.aggregates.UserEntity;
-import dev.arack.enlace.profile.domain.entity.ConnectionEntity;
+import dev.arack.enlace.profile.domain.entities.ConnectionEntity;
 
 import java.util.List;
 import java.util.Optional;

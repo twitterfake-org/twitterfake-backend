@@ -1,9 +1,7 @@
 package dev.arack.enlace.iam.infrastructure.controllers;
 
 import dev.arack.enlace.iam.application.dto.request.UserRequest;
-import dev.arack.enlace.iam.application.internal.managers.AuthManager;
-import dev.arack.enlace.iam.application.dto.request.LoginRequest;
-import dev.arack.enlace.iam.application.dto.request.SignupRequest;
+import dev.arack.enlace.iam.application.core.managers.AuthManager;
 import dev.arack.enlace.iam.application.dto.response.AuthResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

@@ -1,7 +1,7 @@
 package dev.arack.enlace.profile.infrastructure.adapter.client.internal;
 
 import dev.arack.enlace.iam.application.dto.response.UserResponse;
-import dev.arack.enlace.iam.application.internal.facade.AuthenticationFacade;
+import dev.arack.enlace.iam.application.port.input.facade.AuthenticationFacade;
 import dev.arack.enlace.profile.application.port.output.client.UserClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
