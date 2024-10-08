@@ -3,7 +3,7 @@ package dev.arack.enlace.iam.infrastructure.adapter.persistence.sql;
 import dev.arack.enlace.iam.application.port.output.persistence.RolePersistence;
 import dev.arack.enlace.iam.domain.entities.RoleEntity;
 import dev.arack.enlace.iam.domain.valueobject.RoleEnum;
-import dev.arack.enlace.iam.infrastructure.repository.JpaRoleRepository;
+import dev.arack.enlace.iam.infrastructure.repository.jpa.JpaRoleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

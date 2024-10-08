@@ -5,18 +5,15 @@ import dev.arack.enlace.iam.domain.entities.UserDetailsEntity;
 import dev.arack.enlace.iam.domain.valueobject.RoleEnum;
 import dev.arack.enlace.profile.domain.aggregates.ProfileEntity;
 import dev.arack.enlace.profile.domain.entities.ConnectionEntity;
-import dev.arack.enlace.timeline.domain.entities.PostEntity;
+import dev.arack.enlace.post.domain.aggregates.PostEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.domain.AbstractAggregateRoot;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.*;
-import java.util.stream.Stream;
 
 @Entity
 @AllArgsConstructor

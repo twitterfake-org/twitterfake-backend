@@ -2,7 +2,7 @@ package dev.arack.enlace.iam.infrastructure.adapter.persistence.sql;
 
 import dev.arack.enlace.iam.application.port.output.persistence.UserPersistence;
 import dev.arack.enlace.iam.domain.aggregates.UserEntity;
-import dev.arack.enlace.iam.infrastructure.repository.JpaUserRepository;
+import dev.arack.enlace.iam.infrastructure.repository.jpa.JpaUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

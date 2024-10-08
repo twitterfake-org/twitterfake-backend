@@ -5,7 +5,7 @@ import dev.arack.enlace.iam.domain.aggregates.UserEntity;
 import dev.arack.enlace.profile.application.port.input.services.ConnectionService;
 import dev.arack.enlace.profile.application.port.output.client.UserClient;
 import dev.arack.enlace.shared.exceptions.ResourceNotFoundException;
-import dev.arack.enlace.timeline.application.dto.response.FollowResponse;
+import dev.arack.enlace.post.application.dto.response.FollowResponse;
 import dev.arack.enlace.profile.application.port.output.persistence.ConnectionPersistence;
 import dev.arack.enlace.profile.domain.entities.ConnectionEntity;
 import jakarta.validation.ValidationException;
