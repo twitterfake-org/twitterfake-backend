@@ -23,8 +23,6 @@ public class RoleEntity {
     @Enumerated(EnumType.STRING)
     private RoleEnum roleName;
 
-//    @ElementCollection(targetClass = PermissionEntity.class)
-//    @CollectionTable(name = "role_permissions", joinColumns = @JoinColumn(name = "role_id"))
     @ManyToMany(targetEntity = PermissionEntity.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
             name = "role_permissions",

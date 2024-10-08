@@ -1,5 +1,6 @@
 package dev.arack.enlace.iam.application.core.handler;
 
+import dev.arack.enlace.iam.application.port.output.persistence.RolePersistence;
 import dev.arack.enlace.iam.application.port.output.persistence.UserPersistence;
 import dev.arack.enlace.iam.domain.aggregates.UserEntity;
 import dev.arack.enlace.iam.domain.entities.PermissionEntity;
@@ -23,7 +24,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class SeedingEventHandler {
     private final UserPersistence userPersistence;
-    private final JpaRoleRepository rolePersistencePort;
+    private final RolePersistence rolePersistence;
     private final PasswordEncoder passwordEncoder;
     private final ApplicationEventPublisher eventPublisher;
 
@@ -32,10 +33,10 @@ public class SeedingEventHandler {
         var name = event.getApplicationContext().getId();
         log.info("Starting to seed roles and users for {} at {}", name, new Timestamp(System.currentTimeMillis()));
 
-        PermissionEntity createPermission = PermissionEntity.builder().name("CREATE_TEST").build();
-        PermissionEntity readPermission = PermissionEntity.builder().name("READ_TEST").build();
-        PermissionEntity updatePermission = PermissionEntity.builder().name("UPDATE_TEST").build();
-        PermissionEntity deletePermission = PermissionEntity.builder().name("DELETE_TEST").build();
+        PermissionEntity createPermission = PermissionEntity.builder().name("CREATE").build();
+        PermissionEntity readPermission = PermissionEntity.builder().name("READ").build();
+        PermissionEntity updatePermission = PermissionEntity.builder().name("UPDATE").build();
+        PermissionEntity deletePermission = PermissionEntity.builder().name("DELETE").build();
 
         RoleEntity roleAdmin = RoleEntity.builder()
                 .roleName(RoleEnum.ADMIN)
@@ -52,24 +53,27 @@ public class SeedingEventHandler {
                 .permissionList(Set.of(readPermission))
                 .build();
 
-        rolePersistencePort.saveAll(Set.of(roleAdmin, roleUser, roleGuest));
+        rolePersistence.saveAll(Set.of(roleAdmin, roleUser, roleGuest));
 
+        //USUARIO DE PRUEBA
         seedUsers(roleAdmin);
 
         log.info("Finished seeding roles and users for {} at {}", name, new Timestamp(System.currentTimeMillis()));
     }
 
     private void seedUsers(RoleEntity roleAdmin) {
+
+        // This is the user that will be created during the seeding process
         UserEntity user = UserEntity.builder()
                 .username("string")
                 .password(passwordEncoder.encode("string"))
+                .roles(Set.of(roleAdmin))
                 .userDetails(UserDetailsEntity.builder()
                         .enabled(true)
                         .accountNoExpired(true)
                         .credentialNoExpired(true)
                         .accountNoLocked(false)
                         .build())
-                .roles(Set.of(roleAdmin))
                 .build();
 
         userPersistence.save(user);

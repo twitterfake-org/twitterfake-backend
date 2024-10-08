@@ -24,7 +24,7 @@ public class JwtTokenUtil implements TokenUtil {
     @Value("${jwt.secret.key}")
     private String privateKey;
 
-    @Value("${jwt.time.expiration}")
+    @Value("${jwt.user.generator}")
     private String userGenerator;
 
     public String generateToken(Authentication authentication) {
@@ -32,7 +32,6 @@ public class JwtTokenUtil implements TokenUtil {
 
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         String username = userDetails.getUsername();
-        log.info("Username: {}", username);
         String authorities = authentication.getAuthorities()
                 .stream()
                 .map(GrantedAuthority::getAuthority)

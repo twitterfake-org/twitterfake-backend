@@ -26,7 +26,7 @@ public class PostRestController {
 
     private final PostService postService;
 
-    @PreAuthorize("hasRole('ROLE_USER')")
+//    @PreAuthorize("hasRole('ROLE_USER')")
     @Transactional
     @PostMapping(value = "")
     @Operation(
@@ -75,7 +75,7 @@ public class PostRestController {
         return ResponseEntity.status(HttpStatus.OK).body(postResponseList);
     }
 
-    @PreAuthorize("hasRole('ROLE_USER')")
+//    @PreAuthorize("hasRole('ROLE_USER')")
     @Transactional
     @PutMapping(value = "{id}")
     @Operation(

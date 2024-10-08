@@ -6,6 +6,6 @@ import java.util.Optional;
 public interface ProfilePersistence {
     ProfileEntity save(ProfileEntity profileEntity);
     Optional<ProfileEntity> findById(Long currentUserId);
-    void deleteProfile(Long id);
+    void deleteById(Long id);
     Optional<ProfileEntity> findByUsername(String username);
 }

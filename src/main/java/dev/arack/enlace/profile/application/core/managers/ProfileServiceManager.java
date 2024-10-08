@@ -5,6 +5,7 @@ import dev.arack.enlace.profile.application.dto.request.ProfileRequest;
 import dev.arack.enlace.profile.application.dto.response.ProfileResponse;
 import dev.arack.enlace.profile.application.port.input.services.ProfileService;
 import dev.arack.enlace.profile.application.port.output.client.UserClient;
+import dev.arack.enlace.profile.application.port.output.persistence.ProfilePersistence;
 import dev.arack.enlace.profile.domain.aggregates.ProfileEntity;
 import dev.arack.enlace.profile.domain.valueobject.Address;
 import dev.arack.enlace.profile.domain.valueobject.FullName;
@@ -19,7 +20,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ProfileServiceManager implements ProfileService {
 
-    private final JpaProfileRepository jpaProfileRepository;
+    private final ProfilePersistence profilePersistence;
     private final UserClient userClient;
 
     @Override
@@ -32,14 +33,14 @@ public class ProfileServiceManager implements ProfileService {
                 .user(userEntity)
                 .build();
 
-        jpaProfileRepository.save(profile);
+        profilePersistence.save(profile);
     }
 
     @Override
     public ProfileResponse getProfile() {
 
         Long currentUserId = userClient.getCurrentUser().id();
-        ProfileEntity profileEntity = jpaProfileRepository.findById(currentUserId)
+        ProfileEntity profileEntity = profilePersistence.findById(currentUserId)
                 .orElseThrow(() -> new ResourceNotFoundException("Profile not found"));
 
         return ProfileResponse.fromEntity(profileEntity);
@@ -49,7 +50,7 @@ public class ProfileServiceManager implements ProfileService {
     public ProfileResponse updateProfile(ProfileRequest profileRequest) {
 
         Long currentUserId = userClient.getCurrentUser().id();
-        ProfileEntity profileEntity = jpaProfileRepository.findById(currentUserId)
+        ProfileEntity profileEntity = profilePersistence.findById(currentUserId)
                 .orElseThrow(() -> new ResourceNotFoundException("Profile not found"));
 
         profileEntity.setFullName(new FullName(
@@ -65,7 +66,7 @@ public class ProfileServiceManager implements ProfileService {
                 profileRequest.country()
                 ));
 
-        jpaProfileRepository.save(profileEntity);
+        profilePersistence.save(profileEntity);
         return ProfileResponse.fromEntity(profileEntity);
     }
 
@@ -73,13 +74,13 @@ public class ProfileServiceManager implements ProfileService {
     public void deleteProfile() {
 
         Long currentUserId = userClient.getCurrentUser().id();
-        jpaProfileRepository.deleteById(currentUserId);
+        profilePersistence.deleteById(currentUserId);
     }
 
     @Override
     public ProfileResponse getProfileByUsername(String username) {
 
-        ProfileEntity profileEntity = jpaProfileRepository.findByUser_Username(username)
+        ProfileEntity profileEntity = profilePersistence.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("Profile not found"));
 
         return ProfileResponse.fromEntity(profileEntity);

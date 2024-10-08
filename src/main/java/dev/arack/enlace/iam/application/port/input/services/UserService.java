@@ -2,7 +2,7 @@ package dev.arack.enlace.iam.application.port.input.services;
 
 import dev.arack.enlace.iam.application.dto.response.UserResponse;
 import dev.arack.enlace.iam.domain.aggregates.UserEntity;
-import org.springframework.security.core.userdetails.UserDetails;
+import dev.arack.enlace.iam.domain.valueobject.RoleEnum;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;
@@ -12,7 +12,8 @@ import java.util.List;
  */
 public interface UserService extends UserDetailsService {
 
-    void createUser(String username, String password);
+    void createUser(String username, String password, RoleEnum role);
+
     /**
      * Retrieves a list of all users.
      *
@@ -40,6 +41,4 @@ public interface UserService extends UserDetailsService {
      *
      */
     void deleteUser();
-
-    UserDetails loadGuestUser();
 }

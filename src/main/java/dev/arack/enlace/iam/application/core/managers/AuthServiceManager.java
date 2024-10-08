@@ -5,6 +5,7 @@ import dev.arack.enlace.iam.application.port.input.services.AuthService;
 import dev.arack.enlace.iam.application.port.input.services.UserService;
 import dev.arack.enlace.iam.application.dto.response.AuthResponse;
 import dev.arack.enlace.iam.application.port.output.util.TokenUtil;
+import dev.arack.enlace.iam.domain.valueobject.RoleEnum;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -14,6 +15,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 @Log4j2
 @Service
@@ -28,7 +31,7 @@ public class AuthServiceManager implements AuthService {
         String username = signupRequest.username();
         String password = signupRequest.password();
 
-        userService.createUser(username, passwordEncoder.encode(password));
+        userService.createUser(username, passwordEncoder.encode(password), RoleEnum.USER);
         Authentication authentication = this.authenticate(username, password);
         String accessToken = tokenUtil.generateToken(authentication);
 
@@ -48,13 +51,11 @@ public class AuthServiceManager implements AuthService {
 
     public AuthResponse guestLogin() {
 
-        UserDetails guestUser = userService.loadGuestUser();
-        Authentication authentication = new UsernamePasswordAuthenticationToken(guestUser, null, guestUser.getAuthorities());
+        String username = "guest#" + UUID.randomUUID();
+        String password = UUID.randomUUID().toString();
+        userService.createUser(username, passwordEncoder.encode(password), RoleEnum.GUEST);
 
-        String accessToken = tokenUtil.generateToken(authentication);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        return new AuthResponse("guest", "Guest logged successfully", true, accessToken);
+        return login(new UserRequest(username, password));
     }
 
     public void logout() {
@@ -64,6 +65,8 @@ public class AuthServiceManager implements AuthService {
     private Authentication authenticate(String username, String password) {
 
         UserDetails userDetails = userService.loadUserByUsername(username);
+        log.info("userDetails : {}", userDetails);
+
 
         if (userDetails == null || !passwordEncoder.matches(password, userDetails.getPassword())) {
             throw new BadCredentialsException("Invalid username or password");

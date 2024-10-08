@@ -67,17 +67,12 @@ public class UserEntity extends AbstractAggregateRoot<UserEntity> {
         profile.setUser(this);
     }
 
-    public static UserEntity fromUsernameAndPassword(String username, String password) {
-        return UserEntity.builder()
-                .username(username)
-                .password(password)
-                .roles(Set.of(RoleEntity.builder().roleName(RoleEnum.USER).build()))
-                .userDetails(UserDetailsEntity.builder()
-                        .enabled(true)
-                        .accountNoExpired(true)
-                        .accountNoLocked(false)
-                        .credentialNoExpired(true)
-                        .build())
-                .build();
+    public void setUserDetails(UserDetailsEntity userDetails) {
+        this.userDetails = userDetails;
+        userDetails.setUser(this);
     }
+
+//    public static UserEntity fromUsernameAndPassword(String username, String password) {
+//        return
+//    }
 }

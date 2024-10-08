@@ -18,7 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping(value = "/api/v1/users", produces = MediaType.APPLICATION_JSON_VALUE)
 @Tag(name = "User Controller", description = "API for user operations")
-public class UsersRestController {
+public class UserRestController {
 
     private final UserService userService;
 

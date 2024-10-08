@@ -3,15 +3,17 @@ package dev.arack.enlace.iam.application.core.managers;
 import dev.arack.enlace.iam.application.dto.response.UserResponse;
 import dev.arack.enlace.iam.application.port.input.facade.AuthenticationFacade;
 import dev.arack.enlace.iam.application.port.input.services.UserService;
+import dev.arack.enlace.iam.application.port.output.persistence.RolePersistence;
 import dev.arack.enlace.iam.application.port.output.persistence.UserPersistence;
 import dev.arack.enlace.iam.domain.aggregates.UserEntity;
+import dev.arack.enlace.iam.domain.entities.RoleEntity;
+import dev.arack.enlace.iam.domain.entities.UserDetailsEntity;
 import dev.arack.enlace.iam.domain.events.UserCreatedEvent;
+import dev.arack.enlace.iam.domain.valueobject.RoleEnum;
 import dev.arack.enlace.shared.exceptions.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -19,7 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
+import java.util.Set;
 
 @Log4j2
 @Service
@@ -27,16 +29,34 @@ import java.util.UUID;
 public class UserServiceManager implements UserService {
 
     private final UserPersistence userPersistence;
+    private final RolePersistence rolePersistence;
     private final ApplicationEventPublisher eventPublisher;
     private final AuthenticationFacade authenticationFacade;
 
     @Override
-    public void createUser(String username, String password) {
+    public void createUser(String username, String password, RoleEnum role) {
+        RoleEntity roleUser = getRole(role);
 
-        UserEntity userSaved = userPersistence.save(
-                UserEntity.fromUsernameAndPassword(username, password)
-        );
+        UserEntity user = UserEntity.builder()
+                .username(username)
+                .password(password)
+                .roles(Set.of(roleUser))
+                .build();
+
+        user.setUserDetails(UserDetailsEntity.builder()
+                .enabled(true)
+                .accountNoExpired(true)
+                .accountNoLocked(false)
+                .credentialNoExpired(true)
+                .build());
+
+        UserEntity userSaved = userPersistence.save(user);
         eventPublisher.publishEvent(new UserCreatedEvent(this, userSaved));
+    }
+
+    private RoleEntity getRole(RoleEnum role) {
+        return rolePersistence.findByRoleName(role)
+                .orElseThrow(() -> new ResourceNotFoundException("Role not found"));
     }
 
     @Override
@@ -81,25 +101,12 @@ public class UserServiceManager implements UserService {
     }
 
     @Override
-    public UserDetails loadGuestUser() {
-        String username = "guest#" + UUID.randomUUID();
-        String password = UUID.randomUUID().toString();
-        List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_GUEST"));
-        return User.builder()
-                .username(username)
-                .password(password)
-                .disabled(false)
-                .accountExpired(false)
-                .accountLocked(false)
-                .credentialsExpired(false)
-                .authorities(authorities)
-                .build();
-    }
-
-    @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UserEntity userEntity = userPersistence.findUserEntityByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("El usuario " + username + " no existe."));
+
+        log.info("userEntity username: {}", userEntity.getUsername());
+
 
         return new User(userEntity.getUsername(),
                 userEntity.getPassword(),

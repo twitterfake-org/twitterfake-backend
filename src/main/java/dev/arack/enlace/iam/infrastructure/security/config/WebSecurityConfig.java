@@ -59,6 +59,11 @@ public class WebSecurityConfig {
                     http.requestMatchers(HttpMethod.POST, "/api/v1/auth/**").permitAll();
                     http.requestMatchers(HttpMethod.GET, SWAGGER_UI_AUTH_WHITELIST).permitAll();
                     http.requestMatchers(HttpMethod.GET, ENDPOINTS_ROL_INVITED).permitAll();
+                    // Restring EndPoints
+                    http.requestMatchers(HttpMethod.GET, "/api/v1/**").hasAuthority("READ");
+                    http.requestMatchers(HttpMethod.POST, "/api/v1/**").hasAuthority("CREATE");
+                    http.requestMatchers(HttpMethod.PUT, "/api/v1/**").hasAuthority("UPDATE");
+                    http.requestMatchers(HttpMethod.DELETE, "/api/v1/**").hasAuthority("DELETE");
                     // Any other request
                     http.anyRequest().authenticated();
                 })

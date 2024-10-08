@@ -25,7 +25,7 @@ public class SqlProfilePersistence implements ProfilePersistence {
     }
 
     @Override
-    public void deleteProfile(Long id) {
+    public void deleteById(Long id) {
         jpaProfileRepository.deleteById(id);
     }
 

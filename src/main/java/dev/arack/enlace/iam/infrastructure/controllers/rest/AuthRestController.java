@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/api/v1/auth", produces = MediaType.APPLICATION_JSON_VALUE)
-@Tag(name = "User Access Controller", description = "API for authentication operations")
+@Tag(name = "Auth Controller", description = "API for authentication operations")
 public class AuthRestController {
 
     private final AuthServiceManager userDetailsService;

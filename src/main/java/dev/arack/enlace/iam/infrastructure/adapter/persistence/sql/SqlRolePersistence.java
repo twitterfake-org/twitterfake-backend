@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Component
@@ -24,5 +25,10 @@ public class SqlRolePersistence implements RolePersistence {
     @Override
     public void saveAll(Set<RoleEntity> roleEntitySet) {
         jpaRoleRepository.saveAll(roleEntitySet);
+    }
+
+    @Override
+    public Optional<RoleEntity> findByRoleName(RoleEnum role) {
+        return jpaRoleRepository.findByRoleName(role);
     }
 }
