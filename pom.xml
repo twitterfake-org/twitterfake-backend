@@ -13,12 +13,16 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>EnlaceBackend</name>
     <description>EnlaceBackend</description>
-    <url/>
+    <url>https://github.com/ArackRs/EnlaceBackend/wiki</url>
     <licenses>
         <license/>
     </licenses>
     <developers>
-        <developer/>
+        <developer>
+            <id>arackrs</id>
+            <name>Jack Arana Rs</name>
+            <email>arack.rs@gmail.com</email>
+        </developer>
     </developers>
     <scm>
         <connection/>
@@ -179,6 +183,12 @@
 
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>3.12.1</version> <!-- Asegúrate de usar una versión reciente -->
+            </plugin>
+
+            <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
@@ -264,4 +274,13 @@
         </plugins>
     </build>
 
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>3.4.1</version>
+            </plugin>
+        </plugins>
+    </reporting>
 </project>
