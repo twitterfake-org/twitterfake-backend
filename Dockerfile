@@ -12,7 +12,7 @@ COPY mvnw ./
 COPY src ./src
 
 # Descargar las dependencias y construir la aplicación
-RUN ./mvnw clean package # add -DskipTests para saltar las pruebas
+RUN ./mvnw clean package # -DskipTests
 
 # Etapa 2: Ejecución
 FROM eclipse-temurin:21

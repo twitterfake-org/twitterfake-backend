@@ -1,5 +1,6 @@
 package dev.arack.enlace.iam.application.core.managers;
 
+import dev.arack.enlace.iam.application.dto.request.SignupRequest;
 import dev.arack.enlace.iam.application.dto.response.UserResponse;
 import dev.arack.enlace.iam.application.port.input.facade.AuthenticationFacade;
 import dev.arack.enlace.iam.application.port.input.services.UserService;
@@ -34,12 +35,12 @@ public class UserServiceManager implements UserService {
     private final AuthenticationFacade authenticationFacade;
 
     @Override
-    public void createUser(String username, String password, RoleEnum role) {
+    public void createUser(SignupRequest signupRequest, RoleEnum role) {
         RoleEntity roleUser = getRole(role);
 
         UserEntity user = UserEntity.builder()
-                .username(username)
-                .password(password)
+                .username(signupRequest.username())
+                .password(signupRequest.password())
                 .roles(Set.of(roleUser))
                 .build();
 
@@ -51,7 +52,9 @@ public class UserServiceManager implements UserService {
                 .build());
 
         UserEntity userSaved = userPersistence.save(user);
-        eventPublisher.publishEvent(new UserCreatedEvent(this, userSaved));
+
+        eventPublisher.publishEvent(new UserCreatedEvent(
+                this, userSaved, signupRequest.firstName(), signupRequest.lastName()));
     }
 
     private RoleEntity getRole(RoleEnum role) {
@@ -98,6 +101,11 @@ public class UserServiceManager implements UserService {
         UserEntity userEntity = userPersistence.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found" + userId));
         userPersistence.deleteUser(userEntity);
+    }
+
+    @Override
+    public UserResponse getUserCurrent() {
+        return UserResponse.fromEntity(authenticationFacade.getCurrentUser());
     }
 
     @Override

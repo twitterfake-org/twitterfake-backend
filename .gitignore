@@ -34,4 +34,3 @@ build/
 
 ### Deploy ###
 docker-compose.yml
-.env

@@ -1,6 +1,7 @@
 package dev.arack.enlace.iam.application.port.input.services;
 
-import dev.arack.enlace.iam.application.dto.request.UserRequest;
+import dev.arack.enlace.iam.application.dto.request.LoginRequest;
+import dev.arack.enlace.iam.application.dto.request.SignupRequest;
 import dev.arack.enlace.iam.domain.aggregates.UserEntity;
 import dev.arack.enlace.iam.application.dto.response.AuthResponse;
 
@@ -14,13 +15,17 @@ public interface AuthService {
      * @param loginRequest The login request containing user credentials.
      * @return An {@link AuthResponse} object containing the authentication result.
      */
-    AuthResponse login(UserRequest loginRequest);
+    AuthResponse login(LoginRequest loginRequest);
 
     /**
      * Registers a new user with the specified details and password.
      *
-     * @param loginRequest The {@link UserEntity} object containing user details.
+     * @param signupRequest The {@link UserEntity} object containing user details.
      * @return An {@link AuthResponse} object containing the authentication result.
      */
-    AuthResponse signup(UserRequest loginRequest);
+    AuthResponse signup(SignupRequest signupRequest);
+
+    AuthResponse guest();
+
+    void logout();
 }

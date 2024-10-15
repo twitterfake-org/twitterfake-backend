@@ -1,6 +1,7 @@
 package dev.arack.enlace.iam.infrastructure.controllers.rest;
 
-import dev.arack.enlace.iam.application.dto.request.UserRequest;
+import dev.arack.enlace.iam.application.dto.request.LoginRequest;
+import dev.arack.enlace.iam.application.dto.request.SignupRequest;
 import dev.arack.enlace.iam.application.core.managers.AuthServiceManager;
 import dev.arack.enlace.iam.application.dto.response.AuthResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Auth Controller", description = "API for authentication operations")
 public class AuthRestController {
 
-    private final AuthServiceManager userDetailsService;
+    private final AuthServiceManager authServiceManager;
 
     @Transactional
     @PostMapping(value = "/sign-up")
@@ -27,8 +28,8 @@ public class AuthRestController {
             summary = "Sign up a new user",
             description = "Sign up a new user by providing the user's details"
     )
-    public ResponseEntity<AuthResponse> signup(@Valid @RequestBody UserRequest userRequest) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(userDetailsService.signup(userRequest));
+    public ResponseEntity<AuthResponse> signup(@Valid @RequestBody SignupRequest request) {
+        return ResponseEntity.status(HttpStatus.OK).body(authServiceManager.signup(request));
     }
 
     @Transactional
@@ -37,8 +38,8 @@ public class AuthRestController {
             summary = "Log in a user",
             description = "Log in a user by providing the user's credentials"
     )
-    public ResponseEntity<AuthResponse> login(@Valid @RequestBody UserRequest userRequest) {
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(userDetailsService.login(userRequest));
+    public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
+        return ResponseEntity.status(HttpStatus.OK).body(authServiceManager.login(request));
     }
 
     @Transactional
@@ -48,7 +49,7 @@ public class AuthRestController {
             description = "Log in as a guest user"
     )
     public ResponseEntity<AuthResponse> guestLogin() {
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(userDetailsService.guestLogin());
+        return ResponseEntity.status(HttpStatus.OK).body(authServiceManager.guest());
     }
 
     @Transactional
@@ -58,7 +59,7 @@ public class AuthRestController {
             description = "Log out a user"
     )
     public ResponseEntity<Void> logout() {
-        userDetailsService.logout();
+        authServiceManager.logout();
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

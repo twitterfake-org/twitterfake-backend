@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -21,6 +22,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -35,7 +37,7 @@ public class WebSecurityConfig {
 
     private final TokenUtil tokenUtil;
     private final UserDetailsService userDetailsService;
-    private static final String[] ALLOWED_ORIGIN = { "http://localhost:8081", "https://...web.app", "https://...firebaseapp.com" };
+    private static final String[] ALLOWED_ORIGIN = { "http://localhost:4200", "https://...web.app", "https://...firebaseapp.com" };
     private static final String[] SWAGGER_UI_AUTH_WHITELIST = { "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html" };
     private static final String[] ENDPOINTS_ROL_INVITED = { "/api/v1/...", "/api/v1/..." };
 
@@ -59,18 +61,8 @@ public class WebSecurityConfig {
                     http.requestMatchers(HttpMethod.POST, "/api/v1/auth/**").permitAll();
                     http.requestMatchers(HttpMethod.GET, SWAGGER_UI_AUTH_WHITELIST).permitAll();
                     http.requestMatchers(HttpMethod.GET, ENDPOINTS_ROL_INVITED).permitAll();
-                    // Restring EndPoints
-                    http.requestMatchers(HttpMethod.GET, "/api/v1/**").hasAuthority("READ");
-                    http.requestMatchers(HttpMethod.POST, "/api/v1/**").hasAuthority("CREATE");
-                    http.requestMatchers(HttpMethod.PUT, "/api/v1/**").hasAuthority("UPDATE");
-                    http.requestMatchers(HttpMethod.DELETE, "/api/v1/**").hasAuthority("DELETE");
                     // Any other request
                     http.anyRequest().authenticated();
-                })
-                .exceptionHandling(e -> {
-                    e.authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("https://t-enlace.web.app/auth"));
-                    e.accessDeniedHandler((request, response, accessDeniedException) ->
-                            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Access Denied!"));
                 })
                 .addFilterBefore(new JwtTokenSecurityFilter(tokenUtil, userDetailsService), BasicAuthenticationFilter.class)
                 .build();

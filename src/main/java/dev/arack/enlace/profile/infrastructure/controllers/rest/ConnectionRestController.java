@@ -1,6 +1,6 @@
 package dev.arack.enlace.profile.infrastructure.controllers.rest;
 
-import dev.arack.enlace.post.application.dto.response.FollowResponse;
+import dev.arack.enlace.profile.application.dto.response.FollowResponse;
 import dev.arack.enlace.profile.application.port.input.services.ConnectionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -52,26 +52,26 @@ public class ConnectionRestController {
     }
 
     @Transactional(readOnly = true)
-    @GetMapping(value = "/followers")
+    @GetMapping(value = "/followers/{userId}")
     @Operation(
             summary = "Get followers",
             description = "Get followers of a user by providing the user ID"
     )
-    public ResponseEntity<List<FollowResponse>> getFollowers() {
+    public ResponseEntity<List<FollowResponse>> getFollowers(@PathVariable Long userId) {
 
-        List<FollowResponse> followersResponse = connectionService.getFollowers();
+        List<FollowResponse> followersResponse = connectionService.getFollowers(userId);
         return ResponseEntity.status(HttpStatus.OK).body(followersResponse);
     }
 
     @Transactional(readOnly = true)
-    @GetMapping(value = "/following")
+    @GetMapping(value = "/following/{userId}")
     @Operation(
             summary = "Get following",
             description = "Get users followed by a user by providing the user ID"
     )
-    public ResponseEntity<List<FollowResponse>> getFollowing() {
+    public ResponseEntity<List<FollowResponse>> getFollowing(@PathVariable Long userId) {
 
-        List<FollowResponse> followingResponse = connectionService.getFollowing();
+        List<FollowResponse> followingResponse = connectionService.getFollowing(userId);
         return ResponseEntity.status(HttpStatus.OK).body(followingResponse);
     }
 }

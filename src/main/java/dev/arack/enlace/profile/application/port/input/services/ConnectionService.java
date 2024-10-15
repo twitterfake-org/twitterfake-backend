@@ -1,6 +1,6 @@
 package dev.arack.enlace.profile.application.port.input.services;
 
-import dev.arack.enlace.post.application.dto.response.FollowResponse;
+import dev.arack.enlace.profile.application.dto.response.FollowResponse;
 import dev.arack.enlace.profile.domain.entities.ConnectionEntity;
 
 import java.util.List;
@@ -28,12 +28,12 @@ public interface ConnectionService {
      *
      * @return A {@link List} of {@link ConnectionEntity} objects representing the users being followed by the specified user.
      */
-    List<FollowResponse> getFollowing();
+    List<FollowResponse> getFollowing(Long userId);
 
     /**
      * Retrieves a list of users who are following a specified user.
      *
      * @return A {@link List} of {@link ConnectionEntity} objects representing the users following the specified user.
      */
-    List<FollowResponse> getFollowers();
+    List<FollowResponse> getFollowers(Long userId);
 }

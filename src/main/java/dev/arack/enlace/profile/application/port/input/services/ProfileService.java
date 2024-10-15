@@ -5,7 +5,7 @@ import dev.arack.enlace.profile.application.dto.request.ProfileRequest;
 import dev.arack.enlace.profile.application.dto.response.ProfileResponse;
 
 public interface ProfileService {
-    void createProfile(UserEntity user);
+    void createProfile(UserEntity user, String firstName, String lastName);
     ProfileResponse getProfile();
     ProfileResponse updateProfile(ProfileRequest profileRequest);
     void deleteProfile();

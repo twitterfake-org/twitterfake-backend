@@ -14,7 +14,7 @@ public class UserEventListener {
 
     @EventListener
     public void handleUserCreated(UserCreatedEvent event) {
-        profileService.createProfile(event.getUser());
+        profileService.createProfile(event.getUser(), event.getFirstName(), event.getLastName());
     }
 }
 

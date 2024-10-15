@@ -5,7 +5,7 @@ import dev.arack.enlace.iam.domain.aggregates.UserEntity;
 import dev.arack.enlace.profile.application.port.input.services.ConnectionService;
 import dev.arack.enlace.profile.application.port.output.client.UserClient;
 import dev.arack.enlace.shared.exceptions.ResourceNotFoundException;
-import dev.arack.enlace.post.application.dto.response.FollowResponse;
+import dev.arack.enlace.profile.application.dto.response.FollowResponse;
 import dev.arack.enlace.profile.application.port.output.persistence.ConnectionPersistence;
 import dev.arack.enlace.profile.domain.entities.ConnectionEntity;
 import jakarta.validation.ValidationException;
@@ -60,20 +60,16 @@ public class ConnectionServiceManager implements ConnectionService {
     }
 
     @Override
-    public List<FollowResponse> getFollowing() {
+    public List<FollowResponse> getFollowing(Long userId) {
 
-        Long currentUserId = userClient.getCurrentUser().id();
-
-        List<ConnectionEntity> connectionEntityList = connectionPersistence.getFollowing(currentUserId);
+        List<ConnectionEntity> connectionEntityList = connectionPersistence.getFollowing(userId);
         return FollowResponse.fromFollowEntityList(connectionEntityList);
     }
 
     @Override
-    public List<FollowResponse> getFollowers() {
+    public List<FollowResponse> getFollowers(Long userId) {
 
-        Long currentUserId = userClient.getCurrentUser().id();
-
-        List<ConnectionEntity> connectionEntityList = connectionPersistence.getFollowers(currentUserId);
+        List<ConnectionEntity> connectionEntityList = connectionPersistence.getFollowers(userId);
         return FollowResponse.fromFollowEntityList(connectionEntityList);
     }
 }

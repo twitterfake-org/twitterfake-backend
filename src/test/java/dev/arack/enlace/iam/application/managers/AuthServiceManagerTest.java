@@ -1,7 +1,8 @@
 package dev.arack.enlace.iam.application.managers;
 
 import dev.arack.enlace.DataProvider;
-import dev.arack.enlace.iam.application.dto.request.UserRequest;
+import dev.arack.enlace.iam.application.dto.request.LoginRequest;
+import dev.arack.enlace.iam.application.dto.request.SignupRequest;
 import dev.arack.enlace.iam.application.dto.response.AuthResponse;
 import dev.arack.enlace.iam.application.core.managers.AuthServiceManager;
 import dev.arack.enlace.iam.application.port.input.services.UserService;
@@ -14,10 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -38,9 +36,10 @@ class AuthServiceManagerTest {
     @Test
     void testSignup() {
         // Arrange
-        UserRequest userRequest = new UserRequest("username", "password");
+        SignupRequest userRequest = new SignupRequest("firstname", "lastname", "username", "password");
         String username = userRequest.username();
         String encodedPassword = "encodedPassword";
+        userRequest = userRequest.withPasswordEncoded(encodedPassword);
 
         when(passwordEncoder.encode(userRequest.password())).thenReturn(encodedPassword);
         when(userService.loadUserByUsername(username)).thenReturn(DataProvider.userDetailsMock());
@@ -57,7 +56,7 @@ class AuthServiceManagerTest {
         assertTrue(authResponse.status());
 
         verify(passwordEncoder, times(1)).encode(userRequest.password());
-        verify(userService, times(1)).createUser(username, encodedPassword, RoleEnum.USER);
+        verify(userService, times(1)).createUser(userRequest, RoleEnum.USER);
         verify(userService, times(1)).loadUserByUsername(username);
         verify(tokenUtil, times(1)).generateToken(any(Authentication.class));
     }
@@ -65,7 +64,7 @@ class AuthServiceManagerTest {
     @Test
     void testLogin() {
         // Arrange
-        UserRequest userRequest = new UserRequest("username", "password");
+        LoginRequest userRequest = new LoginRequest("username", "password");
         String username = userRequest.username();
         String encodedPassword = "encodedPassword";
 

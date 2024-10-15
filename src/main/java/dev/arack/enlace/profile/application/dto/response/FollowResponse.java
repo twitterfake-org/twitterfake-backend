@@ -1,4 +1,4 @@
-package dev.arack.enlace.post.application.dto.response;
+package dev.arack.enlace.profile.application.dto.response;
 
 import dev.arack.enlace.profile.domain.entities.ConnectionEntity;
 

@@ -9,7 +9,6 @@ import dev.arack.enlace.profile.application.port.output.persistence.ProfilePersi
 import dev.arack.enlace.profile.domain.aggregates.ProfileEntity;
 import dev.arack.enlace.profile.domain.valueobject.Address;
 import dev.arack.enlace.profile.domain.valueobject.FullName;
-import dev.arack.enlace.profile.infrastructure.repository.jpa.JpaProfileRepository;
 import dev.arack.enlace.shared.exceptions.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -24,10 +23,10 @@ public class ProfileServiceManager implements ProfileService {
     private final UserClient userClient;
 
     @Override
-    public void createProfile(UserEntity userEntity) {
+    public void createProfile(UserEntity userEntity, String firstName, String lastName) {
 
         ProfileEntity profile = ProfileEntity.builder()
-                .fullName(new FullName(userEntity.getUsername(), ""))
+                .fullName(new FullName(firstName, lastName))
                 .email("example@mail.com")
                 .address(new Address("", "", "", "", ""))
                 .user(userEntity)

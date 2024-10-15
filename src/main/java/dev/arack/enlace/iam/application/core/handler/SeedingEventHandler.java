@@ -77,6 +77,6 @@ public class SeedingEventHandler {
                 .build();
 
         userPersistence.save(user);
-        eventPublisher.publishEvent(new UserCreatedEvent(this, user));
+        eventPublisher.publishEvent(new UserCreatedEvent(this, user, "string", "string"));
     }
 }

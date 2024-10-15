@@ -67,6 +67,16 @@ public class UserRestController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
+    @GetMapping("/me")
+    @Operation(
+            summary = "Get current user",
+            description = "Fetches the details of the currently authenticated user"
+    )
+    public ResponseEntity<UserResponse> getCurrentUser() {
+        UserResponse userResponse = userService.getUserCurrent();
+        return ResponseEntity.status(HttpStatus.OK).body(userResponse);
+    }
+
 //    @DeleteMapping("/admin/{userId}")
 //    @PreAuthorize("hasRole('ROLE_ADMIN')")
 //    @Operation(

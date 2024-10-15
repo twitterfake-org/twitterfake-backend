@@ -1,13 +1,21 @@
 package dev.arack.enlace.iam.application.dto.request;
 
-import dev.arack.enlace.iam.domain.valueobject.RoleEnum;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-
-import java.util.List;
 
 public record SignupRequest(
-        @NotBlank String username,
-        @NotBlank String password,
-        @NotEmpty List<RoleEnum> roleList) {
+        @NotBlank
+        String firstName,
+        @NotBlank
+        String lastName,
+        @NotBlank
+        String username,
+        @NotBlank
+        String password
+) {
+        public SignupRequest withPasswordEncoded(String password) {
+                return new SignupRequest(firstName, lastName, username, password);
+        }
+        public static SignupRequest of(String firstName, String lastName, String username, String password) {
+                return new SignupRequest(firstName, lastName, username, password);
+        }
 }
