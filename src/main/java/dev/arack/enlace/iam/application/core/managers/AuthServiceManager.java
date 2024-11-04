@@ -31,29 +31,17 @@ public class AuthServiceManager implements AuthService {
     private final TokenUtil tokenUtil;
 
     public AuthResponse signup(SignupRequest signupRequest) {
-        try {
-            String username = signupRequest.username();
-            String password = signupRequest.password();
+        String username = signupRequest.username();
+        String password = signupRequest.password();
 
-            // Codificar la contraseña antes de guardar el usuario
-            signupRequest = signupRequest.withPasswordEncoded(passwordEncoder.encode(password));
-            log.info("Saving new user with username: {}", username);
+        signupRequest = signupRequest.withPasswordEncoded(passwordEncoder.encode(password));
+        userService.createUser(signupRequest, RoleEnum.USER);
 
-            userService.createUser(signupRequest, RoleEnum.USER);
-            log.info("User {} saved successfully", username);
+        Authentication authentication = this.authenticate(username, password);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String accessToken = tokenUtil.generateToken(authentication);
 
-            // Autenticar al usuario después de la creación
-            Authentication authentication = this.authenticate(username, password);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-
-            // Generar token JWT
-            String accessToken = tokenUtil.generateToken(authentication);
-
-            return new AuthResponse(username, "User created successfully", true, accessToken);
-        } catch (Exception e) {
-            log.error("Error during user signup: {}", e.getMessage(), e);
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "An error occurred during signup");
-        }
+        return new AuthResponse(username, "User created successfully", true, accessToken);
     }
 
 

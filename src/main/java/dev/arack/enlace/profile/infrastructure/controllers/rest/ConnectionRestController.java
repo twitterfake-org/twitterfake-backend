@@ -28,13 +28,10 @@ public class ConnectionRestController {
             summary = "Follow a user",
             description = "Follow a user by providing the follower and followed user IDs"
     )
-    public ResponseEntity<HashMap<String, String>> followUser(@PathVariable Long followedId) {
+    public ResponseEntity<Void> followUser(@PathVariable Long followedId) {
 
         connectionService.followUser(followedId);
-        HashMap<String, String> response = new HashMap<>();
-        response.put("message", "User followed successfully");
-
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @Transactional
@@ -43,12 +40,10 @@ public class ConnectionRestController {
             summary = "Unfollow a user",
             description = "Unfollow a user by providing the follower and followed user IDs"
     )
-    public ResponseEntity<HashMap<String, String>> unfollowUser(@PathVariable Long followedId) {
+    public ResponseEntity<Void> unfollowUser(@PathVariable Long followedId) {
 
         connectionService.unfollowUser(followedId);
-        HashMap<String, String> response = new HashMap<>();
-        response.put("message", "User unfollowed successfully");
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @Transactional(readOnly = true)

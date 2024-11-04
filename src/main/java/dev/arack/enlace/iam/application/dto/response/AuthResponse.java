@@ -4,5 +4,5 @@ public record AuthResponse(
         String username,
         String message,
         Boolean status,
-        String jwt) {
+        String token) {
 }

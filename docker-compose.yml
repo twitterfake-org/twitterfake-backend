@@ -2,7 +2,7 @@ version: '3.9'
 
 services:
   docker-compose.yml:
-    image: dockeri.azurecr.io/twitter:beta
+    image: arackrs/twitter:beta
     container_name: twitter-api
     build:
       context: .
@@ -14,7 +14,7 @@ services:
       SPRING_DATASOURCE_USERNAME: arackrs
       SPRING_DATASOURCE_PASSWORD: 456782
       JWT_SECRET_KEY: 8ebc070bb4a53120cd451cf58f4f48067decc4077a4b8d1f2a6632305cc4c299
-      JWT_USER_GENERATOR: AUTH0JWT-ARACK
+      JWT_USER_GENERATOR: AUTH0JWTARACK
     networks:
       - internalnet
 

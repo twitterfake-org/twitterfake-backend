@@ -20,10 +20,6 @@ import org.springframework.http.HttpHeaders;
                 contact = @Contact(name = "Jack Arana Ramos", url = "https://website-arack.web.app/", email = "arack.rs@gmail.com"),
                 license = @License(name = "Standard Software Use License for TwitterAPI", url = "https://twitterapi.example.com/license")
         ),
-        servers = {
-                @Server(description = "Development Server", url = "http://localhost:8080"),
-                @Server(description = "Production Server", url = "https://tdenlace-fhefasf4gvb3acgq.eastus-01.azurewebsites.net")
-        },
         security = @SecurityRequirement(name = "Bearer Authentication")
 )
 @SecurityScheme(

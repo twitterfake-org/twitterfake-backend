@@ -60,6 +60,6 @@ public class AuthRestController {
     )
     public ResponseEntity<Void> logout() {
         authServiceManager.logout();
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
