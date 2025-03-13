@@ -1,8 +1,8 @@
-version: '3.9'
+#version: '3.9'
 
 services:
   docker-compose.yml:
-    image: arackrs/twitter:beta
+    image: arackrs/twitter:latest
     container_name: twitter-api
     build:
       context: .

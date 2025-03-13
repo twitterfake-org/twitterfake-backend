@@ -17,7 +17,7 @@ public class EnlaceBackendApplication {
 
         SpringApplication.run(EnlaceBackendApplication.class, args);
 
-        log.info("Swagger UI is available at » http://localhost:8080/swagger-ui.html");
+        log.info("Swagger UI is available at A » http://twitter-arackrs/swagger-ui.html");
         log.info("H2 Console is available at » http://localhost:8080/h2-console");
     }
 }
