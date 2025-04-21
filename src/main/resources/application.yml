@@ -1,3 +1,21 @@
+server:
+  port: 8080
+
 spring:
-  profiles:
-    active: @profileActive@
+  application:
+    name: TWITTER
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: create
+    open-in-view: false
+    show-sql: false
+
+jwt:
+  secret:
+    key: ${JWT_SECRET_KEY}
+  user:
+    generator: ${JWT_USER_GENERATOR}

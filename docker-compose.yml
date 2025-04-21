@@ -1,17 +1,22 @@
+#version: '3.9'
+
 services:
-  api-consult:
-    container_name: backend-api-service
+  docker-compose.yml:
+    image: arackrs/twitter
+    container_name: twitter-backend
     build:
       context: .
       dockerfile: Dockerfile
-    image: api-enlace:latest
     ports:
-      - 8080:8080
-    expose:
-      - 8080
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:h2:mem:twitter;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+      SPRING_DATASOURCE_USERNAME: arackrs
+      SPRING_DATASOURCE_PASSWORD: 456782
+      JWT_SECRET_KEY: 8ebc070bb4a53120cd451cf58f4f48067decc4077a4b8d1f2a6632305cc4c299
+      JWT_USER_GENERATOR: AUTH0JWTARACK
     networks:
       - internalnet
 
 networks:
   internalnet:
-    driver: bridge
