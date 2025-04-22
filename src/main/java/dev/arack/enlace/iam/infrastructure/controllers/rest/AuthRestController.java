@@ -1,5 +1,7 @@
 package dev.arack.enlace.iam.infrastructure.controllers.rest;
 
+import dev.arack.enlace.iam.application.core.components.GoogleTokenVerifier;
+import dev.arack.enlace.iam.application.dto.request.GoogleTokenRequest;
 import dev.arack.enlace.iam.application.dto.request.LoginRequest;
 import dev.arack.enlace.iam.application.dto.request.SignupRequest;
 import dev.arack.enlace.iam.application.core.managers.AuthServiceManager;
@@ -14,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/api/v1/auth", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -21,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 public class AuthRestController {
 
     private final AuthServiceManager authServiceManager;
+    private final GoogleTokenVerifier googleTokenVerifier;
 
     @Transactional
     @PostMapping(value = "/sign-up")
@@ -62,4 +66,25 @@ public class AuthRestController {
         authServiceManager.logout();
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
+
+    @PostMapping("/google")
+    public ResponseEntity<AuthResponse> handleGoogleToken(@RequestBody GoogleTokenRequest request) {
+        String idToken = request.idToken();
+
+        return googleTokenVerifier.verify(idToken)
+                .map(payloadData -> {
+                    String email = payloadData.getEmail();
+                    String name = (String) payloadData.get("name");
+                    return ResponseEntity.ok(authServiceManager.continueWithGoogle(email, name));
+                })
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new AuthResponse(
+                        null,
+                        "Invalid ID token",
+                        false,
+                        null
+                )));
+    }
+
+
+
 }

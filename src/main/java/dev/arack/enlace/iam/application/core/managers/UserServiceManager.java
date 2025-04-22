@@ -76,6 +76,7 @@ public class UserServiceManager implements UserService {
 
     @Override
     public UserResponse getUserByUsername(String username) {
+
         UserEntity userEntity = userPersistence.findUserEntityByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
@@ -84,9 +85,7 @@ public class UserServiceManager implements UserService {
 
     @Override
     public void updateUsername(String username) {
-        if (userPersistence.existsByUsername(username)) {
-            throw new ResourceNotFoundException("Username already exists");
-        }
+
         Long userId = authenticationFacade.getCurrentUser().getId();
         UserEntity userEntity = userPersistence.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
@@ -114,7 +113,6 @@ public class UserServiceManager implements UserService {
                 .orElseThrow(() -> new UsernameNotFoundException("El usuario " + username + " no existe."));
 
         log.info("userEntity username: {}", userEntity.getUsername());
-
 
         return new User(userEntity.getUsername(),
                 userEntity.getPassword(),

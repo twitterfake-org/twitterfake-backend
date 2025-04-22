@@ -2,14 +2,15 @@ package dev.arack.enlace.iam.application.core.managers;
 
 import dev.arack.enlace.iam.application.dto.request.LoginRequest;
 import dev.arack.enlace.iam.application.dto.request.SignupRequest;
+import dev.arack.enlace.iam.application.dto.response.UserResponse;
 import dev.arack.enlace.iam.application.port.input.services.AuthService;
 import dev.arack.enlace.iam.application.port.input.services.UserService;
 import dev.arack.enlace.iam.application.dto.response.AuthResponse;
+import dev.arack.enlace.iam.application.port.output.persistence.UserPersistence;
 import dev.arack.enlace.iam.application.port.output.util.TokenUtil;
 import dev.arack.enlace.iam.domain.valueobject.RoleEnum;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -17,7 +18,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.UUID;
 
@@ -29,6 +29,7 @@ public class AuthServiceManager implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final UserService userService;
     private final TokenUtil tokenUtil;
+    private final UserPersistence userPersistence;
 
     public AuthResponse signup(SignupRequest signupRequest) {
         String username = signupRequest.username();
@@ -39,9 +40,9 @@ public class AuthServiceManager implements AuthService {
 
         Authentication authentication = this.authenticate(username, password);
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        String accessToken = tokenUtil.generateToken(authentication);
+        String jwt = tokenUtil.generateToken(authentication);
 
-        return new AuthResponse(username, "User created successfully", true, accessToken);
+        return new AuthResponse(username, "User created successfully", true, jwt);
     }
 
 
@@ -50,32 +51,57 @@ public class AuthServiceManager implements AuthService {
         String password = loginRequest.password();
 
         Authentication authentication = this.authenticate(username, password);
-        String accessToken = tokenUtil.generateToken(authentication);
+        String jwt = tokenUtil.generateToken(authentication);
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        return new AuthResponse(username, "User logged successfully", true, accessToken);
+        return new AuthResponse(username, "User logged successfully", true, jwt);
     }
 
     public AuthResponse guest() {
 
-        String username = "guest" + UUID.randomUUID();
-        String password = UUID.randomUUID().toString();
-        SignupRequest signupRequest = new SignupRequest(
-                "Guest",
-                "User",
-                username,
-                password
-        );
-        signupRequest = signupRequest.withPasswordEncoded(passwordEncoder.encode(password));
-        userService.createUser(signupRequest, RoleEnum.GUEST);
+        String name = "Guest User";
+        String email = "guest" + UUID.randomUUID().toString().substring(0, 5) + "@example.com";
+        SignupRequest request = generateUser(name, email);
+        userService.createUser(request, RoleEnum.GUEST);
 
-        return login(new LoginRequest(username, password));
+        return login(new LoginRequest(request.username(), request.password()));
     }
 
     public void logout() {
         SecurityContextHolder.clearContext();
     }
 
+    public AuthResponse continueWithGoogle(String email, String name) {
+
+        String username = email.split("@")[0];
+        if (!userPersistence.existsByUsername(username)) {
+            SignupRequest request = generateUser(name, username);
+            userService.createUser(request, RoleEnum.USER);
+        }
+        UserResponse user = userService.getUserByUsername(username);
+        UserDetails userDetails = userService.loadUserByUsername(user.username());
+        Authentication authentication = new UsernamePasswordAuthenticationToken(
+                userDetails,
+                null,
+                userDetails.getAuthorities()
+        );
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        String jwt = tokenUtil.generateToken(authentication);
+        return new AuthResponse(username, "User logged successfully", true, jwt);
+    }
+
+    private SignupRequest generateUser(String name, String email) {
+
+        String firstName = name.split(" ")[0];
+        String lastName = name.contains(" ") ? name.substring(name.indexOf(" ") + 1) : "";
+        String username = email.contains("@") ? email.split("@")[0] : email;
+        String password = UUID.randomUUID().toString();
+
+        SignupRequest signupRequest = new SignupRequest(firstName, lastName, username, password);
+        signupRequest.withPasswordEncoded(passwordEncoder.encode(password));
+        return signupRequest;
+    }
 
     private Authentication authenticate(String username, String password) {
 

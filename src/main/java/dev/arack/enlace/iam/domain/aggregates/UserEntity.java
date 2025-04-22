@@ -1,5 +1,6 @@
 package dev.arack.enlace.iam.domain.aggregates;
 
+import dev.arack.enlace.iam.application.dto.response.UserResponse;
 import dev.arack.enlace.iam.domain.entities.RoleEntity;
 import dev.arack.enlace.iam.domain.entities.UserDetailsEntity;
 import dev.arack.enlace.iam.domain.valueobject.RoleEnum;
@@ -72,7 +73,4 @@ public class UserEntity extends AbstractAggregateRoot<UserEntity> {
         userDetails.setUser(this);
     }
 
-//    public static UserEntity fromUsernameAndPassword(String username, String password) {
-//        return
-//    }
 }

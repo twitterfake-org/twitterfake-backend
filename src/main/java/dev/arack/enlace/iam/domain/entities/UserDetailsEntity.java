@@ -49,7 +49,7 @@ public class UserDetailsEntity {
 
 
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        log.info("UserEntity :b: {}", user); //me muestra null :c
+
         return user.getRoles().stream().flatMap(role -> Stream.concat(
                         Stream.of(new SimpleGrantedAuthority("ROLE_" + role.getRoleName().name())),
                         role.getPermissionList().stream()

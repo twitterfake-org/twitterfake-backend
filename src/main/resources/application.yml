@@ -13,6 +13,17 @@ spring:
       ddl-auto: create
     open-in-view: false
     show-sql: false
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+    user:
+      name: arack
+      password: 123
+      roles: ADMIN
 
 jwt:
   secret:
