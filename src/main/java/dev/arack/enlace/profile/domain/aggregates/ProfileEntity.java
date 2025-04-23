@@ -28,6 +28,9 @@ public class ProfileEntity {
     @Email
     private String email;
 
+    @Column(name = "photo_url")
+    private String photoUrl;
+
     @OneToOne
     @JoinColumn(nullable = false, unique = true)
     private UserEntity user;

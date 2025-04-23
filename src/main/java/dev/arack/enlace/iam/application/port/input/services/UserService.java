@@ -1,6 +1,7 @@
 package dev.arack.enlace.iam.application.port.input.services;
 
 import dev.arack.enlace.iam.application.dto.request.SignupRequest;
+import dev.arack.enlace.iam.application.dto.request.SocialRequest;
 import dev.arack.enlace.iam.application.dto.response.UserResponse;
 import dev.arack.enlace.iam.domain.aggregates.UserEntity;
 import dev.arack.enlace.iam.domain.valueobject.RoleEnum;
@@ -13,7 +14,7 @@ import java.util.List;
  */
 public interface UserService extends UserDetailsService {
 
-    void createUser(SignupRequest signupRequest, RoleEnum role);
+    void createUser(SignupRequest signupRequest, RoleEnum role, SocialRequest socialRequest);
 
     /**
      * Retrieves a list of all users.

@@ -7,7 +7,8 @@ public record ProfileResponse(
         String fullName,
         String username,
         String email,
-        String address
+        String address,
+        String photoUrl
 ) {
     public static ProfileResponse fromEntity(ProfileEntity profile) {
         return new ProfileResponse(
@@ -15,7 +16,8 @@ public record ProfileResponse(
                 profile.getFullName(),
                 profile.getUser().getUsername(),
                 profile.getEmail(),
-                profile.getAddress()
+                profile.getAddress(),
+                profile.getPhotoUrl()
         );
     }
 }

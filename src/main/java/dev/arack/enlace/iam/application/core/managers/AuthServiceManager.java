@@ -2,6 +2,7 @@ package dev.arack.enlace.iam.application.core.managers;
 
 import dev.arack.enlace.iam.application.dto.request.LoginRequest;
 import dev.arack.enlace.iam.application.dto.request.SignupRequest;
+import dev.arack.enlace.iam.application.dto.request.SocialRequest;
 import dev.arack.enlace.iam.application.dto.response.UserResponse;
 import dev.arack.enlace.iam.application.port.input.services.AuthService;
 import dev.arack.enlace.iam.application.port.input.services.UserService;
@@ -36,7 +37,13 @@ public class AuthServiceManager implements AuthService {
         String password = signupRequest.password();
 
         signupRequest = signupRequest.withPasswordEncoded(passwordEncoder.encode(password));
-        userService.createUser(signupRequest, RoleEnum.USER);
+        SocialRequest socialRequest = new SocialRequest(
+                signupRequest.firstName(),
+                signupRequest.lastName(),
+                signupRequest.username(),
+                ""
+        );
+        userService.createUser(signupRequest, RoleEnum.USER, socialRequest);
 
         Authentication authentication = this.authenticate(username, password);
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -59,10 +66,12 @@ public class AuthServiceManager implements AuthService {
 
     public AuthResponse guest() {
 
-        String name = "Guest User";
+        String firstName = "Guest";
+        String lastName = "User";
         String email = "guest" + UUID.randomUUID().toString().substring(0, 5) + "@example.com";
-        SignupRequest request = generateUser(name, email);
-        userService.createUser(request, RoleEnum.GUEST);
+        SignupRequest request = generateUser(firstName, lastName, email);
+        SocialRequest socialRequest = new SocialRequest(firstName, lastName, email, "");
+        userService.createUser(request, RoleEnum.GUEST, socialRequest);
 
         return login(new LoginRequest(request.username(), request.password()));
     }
@@ -71,12 +80,13 @@ public class AuthServiceManager implements AuthService {
         SecurityContextHolder.clearContext();
     }
 
-    public AuthResponse continueWithGoogle(String email, String name) {
+    public AuthResponse continueWithGoogle(SocialRequest social) {
 
-        String username = email.split("@")[0];
+        String username = social.getEmail().split("@")[0];
+
         if (!userPersistence.existsByUsername(username)) {
-            SignupRequest request = generateUser(name, username);
-            userService.createUser(request, RoleEnum.USER);
+            SignupRequest request = generateUser(social.getFirstName(), social.getLastName(), username);
+            userService.createUser(request, RoleEnum.USER, social);
         }
         UserResponse user = userService.getUserByUsername(username);
         UserDetails userDetails = userService.loadUserByUsername(user.username());
@@ -91,10 +101,8 @@ public class AuthServiceManager implements AuthService {
         return new AuthResponse(username, "User logged successfully", true, jwt);
     }
 
-    private SignupRequest generateUser(String name, String email) {
+    private SignupRequest generateUser(String firstName, String lastName, String email) {
 
-        String firstName = name.split(" ")[0];
-        String lastName = name.contains(" ") ? name.substring(name.indexOf(" ") + 1) : "";
         String username = email.contains("@") ? email.split("@")[0] : email;
         String password = UUID.randomUUID().toString();
 

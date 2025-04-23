@@ -5,6 +5,7 @@ import dev.arack.enlace.iam.application.dto.request.GoogleTokenRequest;
 import dev.arack.enlace.iam.application.dto.request.LoginRequest;
 import dev.arack.enlace.iam.application.dto.request.SignupRequest;
 import dev.arack.enlace.iam.application.core.managers.AuthServiceManager;
+import dev.arack.enlace.iam.application.dto.request.SocialRequest;
 import dev.arack.enlace.iam.application.dto.response.AuthResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -74,8 +75,18 @@ public class AuthRestController {
         return googleTokenVerifier.verify(idToken)
                 .map(payloadData -> {
                     String email = payloadData.getEmail();
-                    String name = (String) payloadData.get("name");
-                    return ResponseEntity.ok(authServiceManager.continueWithGoogle(email, name));
+                    String firstName = (String) payloadData.get("given_name");
+                    String lastName = (String) payloadData.get("family_name");
+                    String photoUrl = (String) payloadData.get("picture");
+
+                    SocialRequest socialRequest = SocialRequest.builder()
+                            .firstName(firstName)
+                            .lastName(lastName)
+                            .email(email)
+                            .photoUrl(photoUrl)
+                            .build();
+
+                    return ResponseEntity.ok(authServiceManager.continueWithGoogle(socialRequest));
                 })
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new AuthResponse(
                         null,

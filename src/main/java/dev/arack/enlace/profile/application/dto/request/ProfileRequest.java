@@ -8,6 +8,7 @@ public record ProfileRequest(
         String number,
         String city,
         String zipCode,
-        String country
+        String country,
+        String photoUrl
 ) {
 }

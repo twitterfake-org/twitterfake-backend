@@ -1,5 +1,6 @@
 package dev.arack.enlace.iam.application.core.handler;
 
+import dev.arack.enlace.iam.application.dto.request.SocialRequest;
 import dev.arack.enlace.iam.application.port.output.persistence.RolePersistence;
 import dev.arack.enlace.iam.application.port.output.persistence.UserPersistence;
 import dev.arack.enlace.iam.domain.aggregates.UserEntity;
@@ -8,7 +9,6 @@ import dev.arack.enlace.iam.domain.entities.RoleEntity;
 import dev.arack.enlace.iam.domain.entities.UserDetailsEntity;
 import dev.arack.enlace.iam.domain.events.UserCreatedEvent;
 import dev.arack.enlace.iam.domain.valueobject.RoleEnum;
-import dev.arack.enlace.iam.infrastructure.repository.jpa.JpaRoleRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -76,7 +76,14 @@ public class SeedingEventHandler {
                         .build())
                 .build();
 
+        SocialRequest socialRequest = new SocialRequest(
+                "Admin",
+                "User",
+                "admin@example.com",
+                "https://example.com/photo.jpg"
+        );
+
         userPersistence.save(user);
-        eventPublisher.publishEvent(new UserCreatedEvent(this, user, "Admin", "User"));
+        eventPublisher.publishEvent(new UserCreatedEvent(this, user, socialRequest));
     }
 }

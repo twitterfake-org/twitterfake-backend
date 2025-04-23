@@ -1,5 +1,6 @@
 package dev.arack.enlace.profile.application.core.managers;
 
+import dev.arack.enlace.iam.application.dto.request.SocialRequest;
 import dev.arack.enlace.iam.domain.aggregates.UserEntity;
 import dev.arack.enlace.profile.application.dto.request.ProfileRequest;
 import dev.arack.enlace.profile.application.dto.response.ProfileResponse;
@@ -23,16 +24,20 @@ public class ProfileServiceManager implements ProfileService {
     private final UserClient userClient;
 
     @Override
-    public void createProfile(UserEntity userEntity, String firstName, String lastName) {
+    public void createProfile(UserEntity userEntity, SocialRequest social) {
 
-        ProfileEntity profile = ProfileEntity.builder()
-                .fullName(new FullName(firstName, lastName))
-                .email("example@mail.com")
+        ProfileEntity profileEntity = ProfileEntity.builder()
+                .fullName(new FullName(
+                        social.getFirstName(),
+                        social.getLastName()
+                ))
+                .email(social.getEmail())
                 .address(new Address("", "", "", "", ""))
+                .photoUrl(social.getPhotoUrl())
                 .user(userEntity)
                 .build();
 
-        profilePersistence.save(profile);
+        profilePersistence.save(profileEntity);
     }
 
     @Override

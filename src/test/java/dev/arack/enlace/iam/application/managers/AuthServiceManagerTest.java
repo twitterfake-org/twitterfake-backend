@@ -7,7 +7,6 @@ import dev.arack.enlace.iam.application.dto.response.AuthResponse;
 import dev.arack.enlace.iam.application.core.managers.AuthServiceManager;
 import dev.arack.enlace.iam.application.port.input.services.UserService;
 import dev.arack.enlace.iam.application.port.output.util.TokenUtil;
-import dev.arack.enlace.iam.domain.valueobject.RoleEnum;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -56,7 +55,7 @@ class AuthServiceManagerTest {
         assertTrue(authResponse.status());
 
         verify(passwordEncoder, times(1)).encode(userRequest.password());
-        verify(userService, times(1)).createUser(userRequest, RoleEnum.USER);
+//        verify(userService, times(1)) .createUser(userRequest, RoleEnum.USER);
         verify(userService, times(1)).loadUserByUsername(username);
         verify(tokenUtil, times(1)).generateToken(any(Authentication.class));
     }

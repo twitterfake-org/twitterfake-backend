@@ -1,6 +1,7 @@
 package dev.arack.enlace.iam.application.core.managers;
 
 import dev.arack.enlace.iam.application.dto.request.SignupRequest;
+import dev.arack.enlace.iam.application.dto.request.SocialRequest;
 import dev.arack.enlace.iam.application.dto.response.UserResponse;
 import dev.arack.enlace.iam.application.port.input.facade.AuthenticationFacade;
 import dev.arack.enlace.iam.application.port.input.services.UserService;
@@ -35,7 +36,7 @@ public class UserServiceManager implements UserService {
     private final AuthenticationFacade authenticationFacade;
 
     @Override
-    public void createUser(SignupRequest signupRequest, RoleEnum role) {
+    public void createUser(SignupRequest signupRequest, RoleEnum role, SocialRequest socialRequest) {
         RoleEntity roleUser = getRole(role);
 
         UserEntity user = UserEntity.builder()
@@ -53,8 +54,7 @@ public class UserServiceManager implements UserService {
 
         UserEntity userSaved = userPersistence.save(user);
 
-        eventPublisher.publishEvent(new UserCreatedEvent(
-                this, userSaved, signupRequest.firstName(), signupRequest.lastName()));
+        eventPublisher.publishEvent(new UserCreatedEvent(this, userSaved, socialRequest));
     }
 
     private RoleEntity getRole(RoleEnum role) {
