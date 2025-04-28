@@ -9,19 +9,19 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>dev.arack</groupId>
-    <artifactId>Enlace</artifactId>
+    <artifactId>twitterfake</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>EnlaceBackend</name>
-    <description>EnlaceBackend</description>
-    <url>https://github.com/ArackRs/EnlaceBackend/wiki</url>
+    <name>TwitterFake</name>
+    <description>Twitter Fake API</description>
+    <url>https://github.com/twitterfake-org/twitterfake-backend/wiki</url>
     <licenses>
         <license/>
     </licenses>
     <developers>
         <developer>
             <id>arackrs</id>
-            <name>Jack Arana Rs</name>
-            <email>arack.rs@gmail.com</email>
+            <name>Jack Arana Ramos</name>
+            <email>arack.dev@gmail.com</email>
         </developer>
     </developers>
     <scm>
@@ -33,12 +33,12 @@
     <properties>
         <java.version>21</java.version>
 
-        <sonar.projectKey>EnlaceBackend</sonar.projectKey>
-        <sonar.projectName>EnlaceBackend</sonar.projectName>
+        <sonar.projectKey>TwitterFake</sonar.projectKey>
+        <sonar.projectName>TwitterFake</sonar.projectName>
         <sonar.host.url>http://localhost:9000</sonar.host.url>
         <sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
         <sonar.coverage.exclusions>
-            **/EnlaceBackendApplication.class,
+            **/TwitterFakeApplication.class,
             **/output/*.class,
             **/filters/*.class,
             **/utils/*.class,
@@ -61,6 +61,18 @@
     </dependencyManagement>
 
     <dependencies>
+        <dependency>
+            <groupId>com.google.api-client</groupId>
+            <artifactId>google-api-client</artifactId>
+            <version>2.5.0</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.google.api-client/google-api-client-jackson2 -->
+        <dependency>
+            <groupId>com.google.api-client</groupId>
+            <artifactId>google-api-client-jackson2</artifactId>
+            <version>1.20.0</version>
+        </dependency>
+
         <dependency>
             <groupId>com.auth0</groupId>
             <artifactId>java-jwt</artifactId>
@@ -166,6 +178,10 @@
             <groupId>org.springframework.modulith</groupId>
             <artifactId>spring-modulith-observability</artifactId>
             <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-oauth2-client</artifactId>
         </dependency>
     </dependencies>
 
