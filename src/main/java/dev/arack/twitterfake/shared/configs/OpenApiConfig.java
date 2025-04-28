@@ -16,7 +16,7 @@ import org.springframework.http.HttpHeaders;
                 description = "This API provides endpoints for user authentication, post management, and following functionality, modeled after Twitter.",
                 termsOfService = "https://t-enlace.example.com/terms_and_conditions",
                 version = "1.0.0",
-                contact = @Contact(name = "Jack Arana Ramos", url = "https://website-arack.web.app/", email = "arack.rs@gmail.com"),
+                contact = @Contact(name = "Jack Arana Ramos", url = "https://arack-rs.web.app/", email = "arack.rs@gmail.com"),
                 license = @License(name = "Standard Software Use License for TwitterFakeAPI", url = "https://twitterfakeapi.example.com/license")
         ),
         security = @SecurityRequirement(name = "Bearer Authentication")

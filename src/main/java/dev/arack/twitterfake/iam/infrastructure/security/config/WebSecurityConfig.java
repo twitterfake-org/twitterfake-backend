@@ -3,6 +3,7 @@ package dev.arack.twitterfake.iam.infrastructure.security.config;
 import dev.arack.twitterfake.iam.infrastructure.security.filter.JwtTokenSecurityFilter;
 import dev.arack.twitterfake.iam.application.port.output.util.TokenUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -35,7 +36,8 @@ public class WebSecurityConfig {
 
     private final TokenUtil tokenUtil;
     private final UserDetailsService userDetailsService;
-    private static final String[] ALLOWED_ORIGIN = { "http://localhost:4200", "https://twitterfake.vercel.app", "https://twitterfake.netlify.app" };
+    @Value("${FRONTEND_URL}")
+    private String frontendUrl;
     private static final String[] SWAGGER_UI_AUTH_WHITELIST = { "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html" };
     private static final String[] ENDPOINTS_ROL_INVITED = { "/api/v1/...", "/api/v1/..." };
 
@@ -44,7 +46,7 @@ public class WebSecurityConfig {
         return httpSecurity
                 .cors(cors -> cors.configurationSource(request -> {
                     CorsConfiguration corsConfig = new CorsConfiguration();
-                    corsConfig.setAllowedOrigins(Arrays.asList(ALLOWED_ORIGIN));
+                    corsConfig.setAllowedOrigins(Arrays.asList("http://localhost:4200", frontendUrl));
                     corsConfig.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                     corsConfig.setAllowedHeaders(List.of("Content-Type", "Authorization"));
                     corsConfig.setAllowCredentials(true);
