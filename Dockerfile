@@ -11,8 +11,9 @@ COPY .mvn ./.mvn
 COPY mvnw ./
 COPY src ./src
 
+# Dar permiso de ejecución al script mvnw
 # Descargar las dependencias y construir la aplicación
-RUN ./mvnw clean package -DskipTests
+RUN chmod +x mvnw && ./mvnw clean package -DskipTests
 
 # Etapa 2: Ejecución
 FROM eclipse-temurin:21
@@ -21,10 +22,10 @@ FROM eclipse-temurin:21
 WORKDIR /app
 
 # Copiar solo el archivo JAR desde la etapa de construcción
-COPY --from=build /app/target/Enlace-0.0.1-SNAPSHOT.jar /app/enlace.jar
+COPY --from=build /app/target/twitterfake-0.0.1-SNAPSHOT.jar /app/twitterfake.jar
 
 # Exponer el puerto en el que la aplicación se ejecutará
 EXPOSE 8080
 
 # Definir el comando para ejecutar la aplicación
-ENTRYPOINT ["java", "-jar", "/app/enlace.jar"]
+ENTRYPOINT ["java", "-jar", "/app/twitterfake.jar"]

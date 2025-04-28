@@ -66,7 +66,7 @@ public class SeedingEventHandler {
         // This is the user that will be created during the seeding process
         UserEntity user = UserEntity.builder()
                 .username("admin")
-                .password(passwordEncoder.encode("1234"))
+                .password(passwordEncoder.encode("123456"))
                 .roles(Set.of(roleAdmin))
                 .userDetails(UserDetailsEntity.builder()
                         .enabled(true)
