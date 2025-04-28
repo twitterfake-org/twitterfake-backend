@@ -15,8 +15,5 @@ public class TwitterFakeApplication {
     public static void main(String[] args) {
 
         SpringApplication.run(TwitterFakeApplication.class, args);
-
-        log.info("Swagger UI is available at A » http://twitter-arackrskoyeb/swagger-ui.html");
-        log.info("H2 Console is available at » http://localhost:8080/h2-console");
     }
 }

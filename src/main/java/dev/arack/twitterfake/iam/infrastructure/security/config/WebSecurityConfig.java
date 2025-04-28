@@ -26,6 +26,7 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 import org.springframework.web.cors.CorsConfiguration;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @Configuration
@@ -36,8 +37,10 @@ public class WebSecurityConfig {
 
     private final TokenUtil tokenUtil;
     private final UserDetailsService userDetailsService;
-    @Value("${FRONTEND_URL}")
+
+    @Value("${frontend.url}")
     private String frontendUrl;
+
     private static final String[] SWAGGER_UI_AUTH_WHITELIST = { "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html" };
     private static final String[] ENDPOINTS_ROL_INVITED = { "/api/v1/...", "/api/v1/..." };
 
@@ -46,7 +49,7 @@ public class WebSecurityConfig {
         return httpSecurity
                 .cors(cors -> cors.configurationSource(request -> {
                     CorsConfiguration corsConfig = new CorsConfiguration();
-                    corsConfig.setAllowedOrigins(Arrays.asList("http://localhost:4200", frontendUrl));
+                    corsConfig.setAllowedOrigins(Collections.singletonList(frontendUrl));
                     corsConfig.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                     corsConfig.setAllowedHeaders(List.of("Content-Type", "Authorization"));
                     corsConfig.setAllowCredentials(true);
@@ -57,8 +60,9 @@ public class WebSecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(http -> {
                     // Public EndPoints
-                    http.requestMatchers("/h2-console/**", "/api/v1/health-check").permitAll();
+                    http.requestMatchers("/h2-console/**").permitAll();
                     http.requestMatchers(HttpMethod.POST, "/api/v1/auth/**").permitAll();
+                    http.requestMatchers(HttpMethod.GET, "/actuator/health").permitAll();
                     http.requestMatchers(HttpMethod.GET, SWAGGER_UI_AUTH_WHITELIST).permitAll();
                     http.requestMatchers(HttpMethod.GET, ENDPOINTS_ROL_INVITED).permitAll();
                     // Any other request
