@@ -82,6 +82,10 @@ public class AuthServiceManager implements AuthService {
 
     public AuthResponse continueWithGoogle(SocialRequest social) {
 
+        if (social.getEmail() == null) {
+            throw new IllegalArgumentException("Email is missing from SocialRequest");
+        }
+
         String username = social.getEmail().split("@")[0];
 
         if (!userPersistence.existsByUsername(username)) {
@@ -104,7 +108,7 @@ public class AuthServiceManager implements AuthService {
     private SignupRequest generateUser(String firstName, String lastName, String email) {
 
         String username = email.contains("@") ? email.split("@")[0] : email;
-        String password = UUID.randomUUID().toString();
+        String password = UUID.randomUUID().toString();//agregar
 
         SignupRequest signupRequest = new SignupRequest(firstName, lastName, username, password);
         signupRequest.withPasswordEncoded(passwordEncoder.encode(password));

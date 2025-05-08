@@ -5,4 +5,13 @@ public record AuthResponse(
         String message,
         Boolean status,
         String token) {
+
+    public static AuthResponse createInvalidAuthResponse() {
+        return new AuthResponse(
+                null,
+                "Invalid ID token",
+                false,
+                null
+        );
+    }
 }

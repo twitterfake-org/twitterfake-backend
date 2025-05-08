@@ -25,6 +25,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -49,7 +50,15 @@ public class WebSecurityConfig {
         return httpSecurity
                 .cors(cors -> cors.configurationSource(request -> {
                     CorsConfiguration corsConfig = new CorsConfiguration();
-                    corsConfig.setAllowedOrigins(Collections.singletonList(frontendUrl));
+                    // Asegurarse de que frontendUrl no sea null o vacío
+                    List<String> allowedOrigins = new ArrayList<>();
+                    if (frontendUrl != null && !frontendUrl.isEmpty()) {
+                        allowedOrigins.add(frontendUrl);
+                    }
+                    // Añadir localhost por defecto
+                    allowedOrigins.add("http://localhost:4200");
+
+                    corsConfig.setAllowedOrigins(allowedOrigins);
                     corsConfig.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                     corsConfig.setAllowedHeaders(List.of("Content-Type", "Authorization"));
                     corsConfig.setAllowCredentials(true);
@@ -61,14 +70,14 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(http -> {
                     // Public EndPoints
                     http.requestMatchers("/h2-console/**").permitAll();
-                    http.requestMatchers(HttpMethod.POST, "/api/v1/auth/**").permitAll();
+                    http.requestMatchers("/api/v1/auth/**").permitAll();
                     http.requestMatchers(HttpMethod.GET, "/actuator/health").permitAll();
                     http.requestMatchers(HttpMethod.GET, SWAGGER_UI_AUTH_WHITELIST).permitAll();
                     http.requestMatchers(HttpMethod.GET, ENDPOINTS_ROL_INVITED).permitAll();
                     // Any other request
                     http.anyRequest().authenticated();
                 })
-                .oauth2Login(Customizer.withDefaults())
+                .oauth2Login(AbstractHttpConfigurer::disable)
                 .addFilterBefore(new JwtTokenSecurityFilter(tokenUtil, userDetailsService), BasicAuthenticationFilter.class)
                 .build();
     }
