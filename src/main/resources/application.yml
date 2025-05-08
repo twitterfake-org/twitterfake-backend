@@ -20,7 +20,7 @@ spring:
           google:
             client-id: ${GOOGLE_CLIENT_ID}
             client-secret: ${GOOGLE_CLIENT_SECRET}
-            redirect-uri: ${BACKEND_URL:http://localhost:8080}/api/v1/auth/google/callback
+            redirect-uri: ${BACKEND_URL:http://localhost:8080}/oauth2/google/callback
 
 management:
   endpoints:
@@ -36,4 +36,3 @@ jwt:
 
 app:
   frontend-url: ${FRONTEND_URL}
-  backend-url: ${BACKEND_URL}

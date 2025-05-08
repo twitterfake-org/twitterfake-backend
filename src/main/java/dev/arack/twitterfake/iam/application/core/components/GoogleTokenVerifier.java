@@ -4,7 +4,6 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import dev.arack.twitterfake.shared.configs.AppProperties;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
@@ -25,19 +24,17 @@ public class GoogleTokenVerifier {
 
     private final String clientId;
     private final String clientSecret;
-    private final AppProperties appProperties;
     private final String redirectUri;
 
     private static final String TOKEN_ENDPOINT = "https://oauth2.googleapis.com/token";
 
     public GoogleTokenVerifier(
             @Value("${spring.security.oauth2.client.registration.google.client-id}") String clientId,
-            @Value("${spring.security.oauth2.client.registration.google.client-secret}") String clientSecret, AppProperties appProperties,
+            @Value("${spring.security.oauth2.client.registration.google.client-secret}") String clientSecret,
             @Value("${spring.security.oauth2.client.registration.google.redirect-uri}") String redirectUri
     ) {
         this.clientId = clientId;
         this.clientSecret = clientSecret;
-        this.appProperties = appProperties;
         this.redirectUri = redirectUri;
 
         this.verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), new JacksonFactory())

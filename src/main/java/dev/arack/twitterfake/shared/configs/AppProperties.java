@@ -12,5 +12,4 @@ import org.springframework.stereotype.Component;
 public class AppProperties {
 
     private String frontendUrl = "http://localhost:4200";
-    private String backendUrl = "http://localhost:8080";
 }
