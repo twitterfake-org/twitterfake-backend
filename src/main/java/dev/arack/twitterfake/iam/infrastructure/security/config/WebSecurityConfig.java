@@ -2,6 +2,7 @@ package dev.arack.twitterfake.iam.infrastructure.security.config;
 
 import dev.arack.twitterfake.iam.infrastructure.security.filter.JwtTokenSecurityFilter;
 import dev.arack.twitterfake.iam.application.port.output.util.TokenUtil;
+import dev.arack.twitterfake.shared.configs.AppProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -38,9 +39,7 @@ public class WebSecurityConfig {
 
     private final TokenUtil tokenUtil;
     private final UserDetailsService userDetailsService;
-
-    @Value("${frontend.url}")
-    private String frontendUrl;
+    private final AppProperties appProperties;
 
     private static final String[] SWAGGER_UI_AUTH_WHITELIST = { "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html" };
     private static final String[] ENDPOINTS_ROL_INVITED = { "/api/v1/...", "/api/v1/..." };
@@ -50,13 +49,12 @@ public class WebSecurityConfig {
         return httpSecurity
                 .cors(cors -> cors.configurationSource(request -> {
                     CorsConfiguration corsConfig = new CorsConfiguration();
-                    // Asegurarse de que frontendUrl no sea null o vacío
+
                     List<String> allowedOrigins = new ArrayList<>();
-                    if (frontendUrl != null && !frontendUrl.isEmpty()) {
+                    String frontendUrl = appProperties.getFrontendUrl();
+                    if (frontendUrl != null && !frontendUrl.isBlank()) {
                         allowedOrigins.add(frontendUrl);
                     }
-                    // Añadir localhost por defecto
-                    allowedOrigins.add("http://localhost:4200");
 
                     corsConfig.setAllowedOrigins(allowedOrigins);
                     corsConfig.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
