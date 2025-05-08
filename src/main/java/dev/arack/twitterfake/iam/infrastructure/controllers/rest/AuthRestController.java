@@ -11,17 +11,20 @@ import dev.arack.twitterfake.iam.application.core.managers.AuthServiceManager;
 import dev.arack.twitterfake.iam.application.dto.request.SocialRequest;
 import dev.arack.twitterfake.iam.application.dto.response.AuthResponse;
 import dev.arack.twitterfake.iam.application.dto.response.GoogleTokenResponseDto;
+import dev.arack.twitterfake.shared.configs.AppProperties;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Payload;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.util.Map;
@@ -36,6 +39,8 @@ public class AuthRestController {
 
     private final AuthServiceManager authServiceManager;
     private final GoogleTokenVerifier googleTokenVerifier;
+
+    private final AppProperties appProperties;
 
     @Transactional
     @PostMapping(value = "/sign-up")
@@ -109,8 +114,13 @@ public class AuthRestController {
                         SocialRequest socialRequest = buildSocialRequestFromPayload(payload);
                         AuthResponse authResponse = authServiceManager.continueWithGoogle(socialRequest);
 
-                        String redirectUrl = "http://localhost:4200/login?token=" + authResponse.token()
-                                + "&state=" + state;
+                        String redirectUrl = UriComponentsBuilder
+                                .fromHttpUrl(appProperties.getFrontendUrl())
+                                .path("/login")
+                                .queryParam("token", authResponse.token())
+                                .queryParam("state", state)
+                                .build()
+                                .toUriString();
 
                         return ResponseEntity.status(HttpStatus.FOUND)
                                 .location(URI.create(redirectUrl))
