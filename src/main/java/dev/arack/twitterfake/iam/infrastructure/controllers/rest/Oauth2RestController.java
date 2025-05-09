@@ -3,6 +3,7 @@ package dev.arack.twitterfake.iam.infrastructure.controllers.rest;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import dev.arack.twitterfake.iam.application.core.components.GoogleTokenVerifier;
 import dev.arack.twitterfake.iam.application.core.managers.AuthServiceManager;
+import dev.arack.twitterfake.iam.application.dto.request.CodeRequest;
 import dev.arack.twitterfake.iam.application.dto.request.GoogleTokenRequest;
 import dev.arack.twitterfake.iam.application.dto.request.SocialRequest;
 import dev.arack.twitterfake.iam.application.dto.response.AuthResponse;
@@ -30,21 +31,25 @@ public class Oauth2RestController {
     private final GoogleTokenVerifier googleTokenVerifier;
     private final AppProperties appProperties;
 
-    @PostMapping("/google")
-    public ResponseEntity<AuthResponse> handleGoogleToken(@RequestBody GoogleTokenRequest request) {
-        String idToken = request.idToken();
+    @PostMapping("/google/callback")
+    public ResponseEntity<AuthResponse> handleGoogleToken(@RequestBody CodeRequest request) {
+        String code = request.code();
+        Map<String, Object> tokenResponse = googleTokenVerifier.exchangeCodeForTokens(code);
+        String idToken = (String) tokenResponse.get("id_token");
+        log.info("Google token exchange successful. ID Token: {}", idToken);
 
         return googleTokenVerifier.verify(idToken)
                 .map(payload -> {
                     SocialRequest socialRequest = buildSocialRequestFromPayload(payload);
-                    return ResponseEntity.ok(authServiceManager.continueWithGoogle(socialRequest));
+                    AuthResponse authResponse = authServiceManager.continueWithGoogle(socialRequest);
+                    return ResponseEntity.ok(authResponse);
                 })
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
                         AuthResponse.createInvalidAuthResponse()
                 ));
     }
 
-    @GetMapping("/google/callback")
+    @GetMapping("/callback/google")
     public ResponseEntity<Object> handleGoogleRedirect(
             @RequestParam("code") String code,
             @RequestParam("state") String state
