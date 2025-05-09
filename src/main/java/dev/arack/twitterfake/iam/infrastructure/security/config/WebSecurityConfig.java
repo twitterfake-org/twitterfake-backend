@@ -69,6 +69,7 @@ public class WebSecurityConfig {
                     // Public EndPoints
                     http.requestMatchers("/h2-console/**").permitAll();
                     http.requestMatchers("/api/v1/auth/**").permitAll();
+                    http.requestMatchers("/oauth2/**").permitAll();
                     http.requestMatchers(HttpMethod.GET, "/actuator/health").permitAll();
                     http.requestMatchers(HttpMethod.GET, SWAGGER_UI_AUTH_WHITELIST).permitAll();
                     http.requestMatchers(HttpMethod.GET, ENDPOINTS_ROL_INVITED).permitAll();
