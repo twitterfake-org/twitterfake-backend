@@ -1,7 +1,7 @@
 package dev.arack.twitterfake.iam.infrastructure.security.filter;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
-import dev.arack.twitterfake.iam.application.port.output.util.TokenUtil;
+import dev.arack.twitterfake.iam.infrastructure.security.components.JwtToken;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,7 +25,7 @@ import java.util.Collection;
 @RequiredArgsConstructor
 public class JwtTokenSecurityFilter extends OncePerRequestFilter {
 
-    private final TokenUtil tokenUtil;
+    private final JwtToken tokenUtil;
     private final UserDetailsService userDetailsService;
 
     @Override
