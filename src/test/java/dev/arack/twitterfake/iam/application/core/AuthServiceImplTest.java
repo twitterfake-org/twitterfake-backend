@@ -5,7 +5,7 @@ import dev.arack.twitterfake.iam.infrastructure.dto.request.LoginRequest;
 import dev.arack.twitterfake.iam.infrastructure.dto.request.SignupRequest;
 import dev.arack.twitterfake.iam.infrastructure.dto.response.AuthResponse;
 import dev.arack.twitterfake.iam.domain.services.UserService;
-import dev.arack.twitterfake.iam.infrastructure.utils.TokenUtil;
+import dev.arack.twitterfake.iam.infrastructure.security.components.JwtToken;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -29,7 +29,7 @@ class AuthServiceImplTest {
     @Mock
     private UserService userService;
     @Mock
-    private TokenUtil tokenUtil;
+    private JwtToken tokenUtil;
 
     @Test
     void testSignup() {

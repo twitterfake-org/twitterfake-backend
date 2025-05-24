@@ -3,6 +3,7 @@ package dev.arack.twitterfake.iam.domain.services;
 import dev.arack.twitterfake.iam.infrastructure.dto.request.LoginRequest;
 import dev.arack.twitterfake.iam.infrastructure.dto.request.SignupRequest;
 import dev.arack.twitterfake.iam.domain.model.aggregates.UserEntity;
+import dev.arack.twitterfake.iam.infrastructure.dto.request.SocialRequest;
 import dev.arack.twitterfake.iam.infrastructure.dto.response.AuthResponse;
 
 /**
@@ -26,6 +27,14 @@ public interface AuthService {
     AuthResponse signup(SignupRequest signupRequest);
 
     AuthResponse guest();
+
+    /**
+     * Logs in a user using a social media account.
+     *
+     * @param social The {@link SocialRequest} object containing social media account details.
+     * @return An {@link AuthResponse} object containing the authentication result.
+     */
+    AuthResponse continueWithGoogle(SocialRequest social);
 
     void logout();
 }

@@ -1,4 +1,4 @@
-package dev.arack.twitterfake.iam.infrastructure.utils;
+package dev.arack.twitterfake.iam.infrastructure.security.components;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 
 @Log4j2
 @Component
-public class JwtTokenUtil implements TokenUtil {
+public class JwtTokenImpl implements JwtToken {
     @Value("${jwt.secret.key}")
     private String privateKey;
 

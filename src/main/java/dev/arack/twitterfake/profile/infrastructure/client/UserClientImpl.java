@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class UserClientInternal implements UserClient {
+public class UserClientImpl implements UserClient {
 
     private final AuthenticationFacade authenticationFacade;
 

@@ -1,7 +1,7 @@
 package dev.arack.twitterfake.iam.infrastructure.security.config;
 
 import dev.arack.twitterfake.iam.infrastructure.security.filter.JwtTokenSecurityFilter;
-import dev.arack.twitterfake.iam.infrastructure.utils.TokenUtil;
+import dev.arack.twitterfake.iam.infrastructure.security.components.JwtToken;
 import dev.arack.twitterfake.shared.configs.AppProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -33,7 +33,7 @@ import java.util.List;
 @EnableWebSecurity
 public class WebSecurityConfig {
 
-    private final TokenUtil tokenUtil;
+    private final JwtToken tokenUtil;
     private final UserDetailsService userDetailsService;
     private final AppProperties appProperties;
 

@@ -1,4 +1,4 @@
-package dev.arack.twitterfake.iam.application.components;
+package dev.arack.twitterfake.iam.infrastructure.security.components;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Component
-public class GoogleTokenVerifierUtil {
+public class GoogleTokenVerifierImpl implements GoogleTokenVerifier {
 
     private final GoogleIdTokenVerifier verifier;
 
@@ -28,7 +28,7 @@ public class GoogleTokenVerifierUtil {
 
     private static final String TOKEN_ENDPOINT = "https://oauth2.googleapis.com/token";
 
-    public GoogleTokenVerifierUtil(
+    public GoogleTokenVerifierImpl(
             @Value("${spring.security.oauth2.client.registration.google.client-id}") String clientId,
             @Value("${spring.security.oauth2.client.registration.google.client-secret}") String clientSecret,
             @Value("${spring.security.oauth2.client.registration.google.redirect-uri}") String redirectUri

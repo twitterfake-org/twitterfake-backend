@@ -7,7 +7,7 @@ import dev.arack.twitterfake.iam.infrastructure.dto.response.UserResponse;
 import dev.arack.twitterfake.iam.domain.services.AuthService;
 import dev.arack.twitterfake.iam.domain.services.UserService;
 import dev.arack.twitterfake.iam.infrastructure.dto.response.AuthResponse;
-import dev.arack.twitterfake.iam.infrastructure.utils.TokenUtil;
+import dev.arack.twitterfake.iam.infrastructure.security.components.JwtToken;
 import dev.arack.twitterfake.iam.domain.model.valueobject.RoleEnum;
 import dev.arack.twitterfake.iam.infrastructure.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +29,7 @@ public class AuthServiceImpl implements AuthService {
 
     private final PasswordEncoder passwordEncoder;
     private final UserService userService;
-    private final TokenUtil tokenUtil;
+    private final JwtToken tokenUtil;
     private final UserRepository userRepository;
 
     public AuthResponse signup(SignupRequest signupRequest) {

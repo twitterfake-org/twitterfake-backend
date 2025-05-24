@@ -1,8 +1,8 @@
 package dev.arack.twitterfake.iam.infrastructure.controllers;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
-import dev.arack.twitterfake.iam.application.components.GoogleTokenVerifierUtil;
-import dev.arack.twitterfake.iam.application.core.AuthServiceImpl;
+import dev.arack.twitterfake.iam.domain.services.AuthService;
+import dev.arack.twitterfake.iam.infrastructure.security.components.GoogleTokenVerifier;
 import dev.arack.twitterfake.iam.infrastructure.dto.request.CodeRequest;
 import dev.arack.twitterfake.iam.infrastructure.dto.request.SocialRequest;
 import dev.arack.twitterfake.iam.infrastructure.dto.response.AuthResponse;
@@ -26,21 +26,21 @@ import java.util.Map;
 @Tag(name = "oAuth2 Controller", description = "API for authentication operations")
 public class Oauth2Controller {
 
-    private final AuthServiceImpl authServiceImpl;
-    private final GoogleTokenVerifierUtil googleTokenVerifierUtil;
+    private final AuthService authService;
+    private final GoogleTokenVerifier googleTokenVerifier;
     private final AppProperties appProperties;
 
     @PostMapping("/google/callback")
     public ResponseEntity<AuthResponse> handleGoogleToken(@RequestBody CodeRequest request) {
         String code = request.code();
-        Map<String, Object> tokenResponse = googleTokenVerifierUtil.exchangeCodeForTokens(code);
+        Map<String, Object> tokenResponse = googleTokenVerifier.exchangeCodeForTokens(code);
         String idToken = (String) tokenResponse.get("id_token");
         log.info("Google token exchange successful. ID Token: {}", idToken);
 
-        return googleTokenVerifierUtil.verify(idToken)
+        return googleTokenVerifier.verify(idToken)
                 .map(payload -> {
                     SocialRequest socialRequest = buildSocialRequestFromPayload(payload);
-                    AuthResponse authResponse = authServiceImpl.continueWithGoogle(socialRequest);
+                    AuthResponse authResponse = authService.continueWithGoogle(socialRequest);
                     return ResponseEntity.ok(authResponse);
                 })
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
@@ -57,13 +57,13 @@ public class Oauth2Controller {
             // 1. Aquí podrías opcionalmente validar el "stateFromGoogle" si guardaste el "expectedState" del usuario en backend.
             // En muchos casos sencillos, solo se valida en frontend.
 
-            Map<String, Object> tokenResponse = googleTokenVerifierUtil.exchangeCodeForTokens(code);
+            Map<String, Object> tokenResponse = googleTokenVerifier.exchangeCodeForTokens(code);
             String idToken = (String) tokenResponse.get("id_token");
 
-            return googleTokenVerifierUtil.verify(idToken)
+            return googleTokenVerifier.verify(idToken)
                     .map(payload -> {
                         SocialRequest socialRequest = buildSocialRequestFromPayload(payload);
-                        AuthResponse authResponse = authServiceImpl.continueWithGoogle(socialRequest);
+                        AuthResponse authResponse = authService.continueWithGoogle(socialRequest);
 
                         String redirectUrl = UriComponentsBuilder
                                 .fromHttpUrl(appProperties.getFrontendUrl())

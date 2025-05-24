@@ -1,8 +1,8 @@
 package dev.arack.twitterfake.iam.infrastructure.controllers;
 
+import dev.arack.twitterfake.iam.domain.services.AuthService;
 import dev.arack.twitterfake.iam.infrastructure.dto.request.LoginRequest;
 import dev.arack.twitterfake.iam.infrastructure.dto.request.SignupRequest;
-import dev.arack.twitterfake.iam.application.core.AuthServiceImpl;
 import dev.arack.twitterfake.iam.infrastructure.dto.response.AuthResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Auth Controller", description = "API for authentication operations")
 public class AuthController {
 
-    private final AuthServiceImpl authServiceImpl;
+    private final AuthService authService;
 
     @Transactional
     @PostMapping(value = "/sign-up")
@@ -31,7 +31,7 @@ public class AuthController {
             description = "Sign up a new user by providing the user's details"
     )
     public ResponseEntity<AuthResponse> signup(@Valid @RequestBody SignupRequest request) {
-        return ResponseEntity.status(HttpStatus.OK).body(authServiceImpl.signup(request));
+        return ResponseEntity.status(HttpStatus.OK).body(authService.signup(request));
     }
 
     @Transactional
@@ -41,7 +41,7 @@ public class AuthController {
             description = "Log in a user by providing the user's credentials"
     )
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
-        return ResponseEntity.status(HttpStatus.OK).body(authServiceImpl.login(request));
+        return ResponseEntity.status(HttpStatus.OK).body(authService.login(request));
     }
 
     @Transactional
@@ -51,7 +51,7 @@ public class AuthController {
             description = "Log in as a guest user"
     )
     public ResponseEntity<AuthResponse> guestLogin() {
-        return ResponseEntity.status(HttpStatus.OK).body(authServiceImpl.guest());
+        return ResponseEntity.status(HttpStatus.OK).body(authService.guest());
     }
 
     @Transactional
@@ -61,7 +61,7 @@ public class AuthController {
             description = "Log out a user"
     )
     public ResponseEntity<Void> logout() {
-        authServiceImpl.logout();
+        authService.logout();
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
