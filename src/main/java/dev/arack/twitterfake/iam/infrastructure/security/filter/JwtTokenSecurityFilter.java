@@ -1,7 +1,7 @@
 package dev.arack.twitterfake.iam.infrastructure.security.filter;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
-import dev.arack.twitterfake.iam.application.port.output.util.TokenUtil;
+import dev.arack.twitterfake.iam.infrastructure.utils.TokenUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

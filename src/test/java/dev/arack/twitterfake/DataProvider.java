@@ -1,6 +1,6 @@
 package dev.arack.twitterfake;
 
-import dev.arack.twitterfake.iam.domain.aggregates.UserEntity;
+import dev.arack.twitterfake.iam.domain.model.aggregates.UserEntity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
