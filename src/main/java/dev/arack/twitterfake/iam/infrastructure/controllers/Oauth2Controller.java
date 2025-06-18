@@ -67,7 +67,7 @@ public class Oauth2Controller {
 
                         String redirectUrl = UriComponentsBuilder
                                 .fromHttpUrl(appProperties.getFrontendUrl())
-                                .path("/login")
+                                .path("/oauth2/callback")
                                 .queryParam("token", authResponse.token())
                                 .queryParam("state", state)
                                 .build()
